@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/list_item_List_Tab"
+        android:hint="Search"></EditText>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:id="@+id/feed_recyclerView"
+        ></android.support.v7.widget.RecyclerView>
+    
+    
+    
 
 
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="List tab text"
-            android:id="@+id/list_item_List_Tab"/>
-
-
-    </LinearLayout>
-
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

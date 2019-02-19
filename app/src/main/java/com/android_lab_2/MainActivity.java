@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        // set starting posision to 1 right of default.
-        viewPager.setCurrentItem(viewPager.getCurrentItem() +1);
+        // set starting position to 1 right of default.
+        viewPager.setCurrentItem(viewPager.getCurrentItem() +2);
 
     }
 
@@ -101,6 +101,5 @@ public class MainActivity extends AppCompatActivity {
 
 sources:
     Fragments: https://www.youtube.com/watch?v=bNpWGI_hGGg
-
-
+    RSS + Recyclerview: https://www.youtube.com/watch?v=APInjVO0WkQ
 */
