@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         // set starting position to 1 right of default.
-        viewPager.setCurrentItem(viewPager.getCurrentItem() +2);
+        viewPager.setCurrentItem(viewPager.getCurrentItem() +1);
 
     }
 

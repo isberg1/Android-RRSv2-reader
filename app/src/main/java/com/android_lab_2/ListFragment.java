@@ -1,6 +1,10 @@
 package com.android_lab_2;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,22 +16,34 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.android_lab_2.Adapter.FeedAdapter;
+import com.android_lab_2.model.Item;
 import com.android_lab_2.model.RSSObject;
+import com.android_lab_2.model.TrimmedRSSObject;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListFragment extends Fragment {
     private static final String TAG = "ListFragment";
 
     private RecyclerView recyclerView;
     private RSSObject rssObject;
-
+    private List<TrimmedRSSObject> trimmedRSSObject = new ArrayList<>();
 
     private String RSSLink = "https://www.nrk.no/toppsaker.rss";
     private String RSSToJsonAPI = "https://api.rss2json.com/v1/api.json?rss_url=";
+    private TextView textView;
+    private Button button;
+
+
 
     @Nullable
     @Override
@@ -39,15 +55,42 @@ public class ListFragment extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(llm);
 
+        textView = view.findViewById(R.id.list_item_List_Tab);
+        textView.setFocusable(false);
+        textView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                textView.setFocusableInTouchMode(true);
+                return false;
+            }
+        });
 
-        getRRS();
 
-        
+        button = view.findViewById(R.id.button_refresh);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getRRS();
+            }
+        });
+
+        if (isNetworkAvailable()){
+            getRRS();
+        }
+
+
         return view;
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     private void getRRS() {
-        AsyncTask<String,String,String> getRRSAsync = new AsyncTask<String, String, String>() {
+        @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> getRRSAsync = new AsyncTask<String, String, String>() {
 
             ProgressDialog dialog = new ProgressDialog(getContext());
 
@@ -72,7 +115,12 @@ public class ListFragment extends Fragment {
             protected void onPostExecute(String s) {
                 dialog.dismiss();
                 rssObject = new Gson().fromJson(s, RSSObject.class);
-                FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
+
+                for (Item item: rssObject.getItems() ) {
+                    trimmedRSSObject.add(new TrimmedRSSObject(item.getTitle(),item.getPupDate(),item.getLink(),item.getDescription()));
+                }
+                FeedAdapter adapter = new FeedAdapter(getContext(), trimmedRSSObject);
+                //FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
                 adapter.notifyDataSetChanged();
                 recyclerView.setAdapter(adapter);
             }
@@ -97,5 +145,12 @@ public class ListFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+    public void refreshButton() {
+
     }
 }
