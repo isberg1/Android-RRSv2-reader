@@ -87,7 +87,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     public void onBindViewHolder(@NonNull FeedViewHolder feedViewHolder, int i) {
 
         feedViewHolder.title.setText(trimmedRSSObject.get(i).getTitle());
-        feedViewHolder.date.setText(trimmedRSSObject.get(i).getPupDate());
+        feedViewHolder.date.setText(trimmedRSSObject.get(i).getPubDate());
         feedViewHolder.content.setText(trimmedRSSObject.get(i).getDescription());
 
         feedViewHolder.setItemClickListener(new ItemClickListener() {

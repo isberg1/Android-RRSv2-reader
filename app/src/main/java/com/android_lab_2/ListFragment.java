@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android_lab_2.Adapter.FeedAdapter;
+import com.android_lab_2.DataBase.DBHelper;
 import com.android_lab_2.model.Item;
 import com.android_lab_2.model.RSSObject;
 import com.android_lab_2.model.TrimmedRSSObject;
@@ -33,7 +35,7 @@ import java.util.List;
 
 public class ListFragment extends Fragment {
     private static final String TAG = "ListFragment";
-
+    public static final String DATABASE_NAME = "RSS_DB";
     private RecyclerView recyclerView;
     private RSSObject rssObject;
     private List<TrimmedRSSObject> trimmedRSSObject = new ArrayList<>();
@@ -42,6 +44,8 @@ public class ListFragment extends Fragment {
     private String RSSToJsonAPI = "https://api.rss2json.com/v1/api.json?rss_url=";
     private TextView textView;
     private Button button;
+    private DBHelper db;
+    private FeedAdapter adapter;
 
 
 
@@ -65,22 +69,79 @@ public class ListFragment extends Fragment {
             }
         });
 
+        db = new DBHelper(getContext(), DATABASE_NAME);
 
         button = view.findViewById(R.id.button_refresh);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getRRS();
+                if (isNetworkAvailable()){
+                    getRRS();
+                }
             }
         });
+
+
 
         if (isNetworkAvailable()){
             getRRS();
         }
 
 
+        setUpRecyclerView();
+
+
+
+        //FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
+        //adapter.notifyDataSetChanged();
+        //recyclerView.setAdapter(adapter);
         return view;
     }
+
+
+    public void setUpRecyclerView() {
+
+        Thread getContent = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                int counter = 0;
+                trimmedRSSObject = db.getAllEntries();
+
+                while (trimmedRSSObject.size() == 0 && counter < 10) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    trimmedRSSObject = db.getAllEntries();
+                    counter ++;
+                }
+                if (trimmedRSSObject.size() == 0) {
+                    return;
+                }
+
+                //adapter = new FeedAdapter(getContext(), trimmedRSSObject);
+                //adapter.notifyDataSetChanged();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter = new FeedAdapter(getContext(), trimmedRSSObject);
+                        recyclerView.setAdapter(adapter);
+                        Log.d(TAG, "run:  with a smile  " );
+                    }
+                });
+
+
+
+            }
+        });
+
+        getContent.start();
+       // adapter.notifyDataSetChanged();
+    }
+
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -115,14 +176,19 @@ public class ListFragment extends Fragment {
             protected void onPostExecute(String s) {
                 dialog.dismiss();
                 rssObject = new Gson().fromJson(s, RSSObject.class);
+                Log.d(TAG, "onPostExecute: aaaa");
+                if (rssObject.getItems().size() > 0) {
 
-                for (Item item: rssObject.getItems() ) {
-                    trimmedRSSObject.add(new TrimmedRSSObject(item.getTitle(),item.getPupDate(),item.getLink(),item.getDescription()));
+                    Log.d(TAG, "onPostExecute: bbbb");
+                    for (Item item: rssObject.getItems() ) {
+                       // trimmedRSSObject.add(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
+                        upDateDB(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
+                    }
+
+
+
                 }
-                FeedAdapter adapter = new FeedAdapter(getContext(), trimmedRSSObject);
-                //FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
-                adapter.notifyDataSetChanged();
-                recyclerView.setAdapter(adapter);
+
             }
         };
 
@@ -130,27 +196,47 @@ public class ListFragment extends Fragment {
         url.append(RSSLink);
 
         getRRSAsync.execute(url.toString());
+    }
+
+    public void upDateDB(TrimmedRSSObject rss) {
+        Log.d(TAG, "doInBackground: " + rss);
+        AsyncTask<TrimmedRSSObject,Void,Void >upDateDBAsync = new AsyncTask<TrimmedRSSObject, Void, Void>() {
+            @Override
+            protected Void doInBackground(TrimmedRSSObject... objects) {
+
+                for (TrimmedRSSObject temp: objects) {
+                    db.insert(temp);
+
+                }
+                return null;
+            }
+
+        };
 
 
 
+       /* AsyncTask<List<TrimmedRSSObject>,Void, Void> upDateDBAsync = new AsyncTask<List<TrimmedRSSObject>, Void, Void>() {
+            @Override
+            protected Void doInBackground(List<TrimmedRSSObject>... lists) {
+                for (TrimmedRSSObject object: trimmedRSSObject) {
+                    db.insert(object);
+                }
+
+                return null;
+            }
+
+
+        };*/
+
+        upDateDBAsync.execute(rss);
     }
 
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_refresh) {
-            getRRS();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void updateRecyclerView() {
+        adapter = new FeedAdapter(getContext(), trimmedRSSObject);
+        //FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
+        //adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
     }
 
-
-
-
-    public void refreshButton() {
-
-    }
 }

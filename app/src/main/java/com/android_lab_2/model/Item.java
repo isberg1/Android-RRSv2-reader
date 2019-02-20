@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Item {
     public  String  title;
-    public  String  pupDate;
+    public  String  pubDate;
     public  String  link;
     public  String  guid;
     public  String  author;
@@ -14,9 +14,9 @@ public class Item {
     public  Object enclosure;
     public List<String> categories;
 
-    public Item(String title, String pupDate, String link, String guid, String author, String thumbnail, String description, String content, String enclosure, List<String> categories) {
+    public Item(String title, String pubDate, String link, String guid, String author, String thumbnail, String description, String content, String enclosure, List<String> categories) {
         this.title = title;
-        this.pupDate = pupDate;
+        this.pubDate = pubDate;
         this.link = link;
         this.guid = guid;
         this.author = author;
@@ -35,12 +35,12 @@ public class Item {
         this.title = title;
     }
 
-    public String getPupDate() {
-        return pupDate;
+    public String getPubDate() {
+        return pubDate;
     }
 
-    public void setPupDate(String pupDate) {
-        this.pupDate = pupDate;
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
     }
 
     public String getLink() {
