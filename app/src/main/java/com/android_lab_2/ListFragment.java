@@ -1,6 +1,7 @@
 package com.android_lab_2;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -14,9 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,17 +33,18 @@ import java.util.List;
 
 public class ListFragment extends Fragment {
     private static final String TAG = "ListFragment";
-    public static final String DATABASE_NAME = "RSS_DB";
+
     private RecyclerView recyclerView;
     private RSSObject rssObject;
-    private List<TrimmedRSSObject> trimmedRSSObject = new ArrayList<>();
+    private List<TrimmedRSSObject> trimmedRSSObjectList = new ArrayList<>();
 
-    private String RSSLink = "https://www.nrk.no/toppsaker.rss";
     private String RSSToJsonAPI = "https://api.rss2json.com/v1/api.json?rss_url=";
     private TextView textView;
     private Button button;
-    private DBHelper db;
     private FeedAdapter adapter;
+
+    public static final String DATABASE_NAME = "RSS_DB";
+    public static DBHelper db;
 
 
 
@@ -76,25 +75,17 @@ public class ListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()){
+                    Log.d(TAG, "onClick: Refresh button + network available");
                     getRRS();
+                    adapter.notifyDataSetChanged();
+                    //setUpRecyclerView();
+
                 }
             }
         });
 
-
-
-        if (isNetworkAvailable()){
-            getRRS();
-        }
-
-
         setUpRecyclerView();
 
-
-
-        //FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
-        //adapter.notifyDataSetChanged();
-        //recyclerView.setAdapter(adapter);
         return view;
     }
 
@@ -105,43 +96,41 @@ public class ListFragment extends Fragment {
             @Override
             public void run() {
 
-                int counter = 0;
-                trimmedRSSObject = db.getAllEntries();
+               updateDatastructure();
 
-                while (trimmedRSSObject.size() == 0 && counter < 10) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    trimmedRSSObject = db.getAllEntries();
-                    counter ++;
-                }
-                if (trimmedRSSObject.size() == 0) {
+               if (trimmedRSSObjectList.size() == 0) {
                     return;
-                }
+               }
 
-                //adapter = new FeedAdapter(getContext(), trimmedRSSObject);
-                //adapter.notifyDataSetChanged();
-                getActivity().runOnUiThread(new Runnable() {
+                // set adapter in UI thread
+               getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter = new FeedAdapter(getContext(), trimmedRSSObject);
-                        recyclerView.setAdapter(adapter);
-                        Log.d(TAG, "run:  with a smile  " );
-                    }
+                       adapter = new FeedAdapter(getContext(), trimmedRSSObjectList);
+                       recyclerView.setAdapter(adapter);
+                       Log.d(TAG, "run:  with a smile  " );
+                   }
                 });
-
-
-
             }
         });
-
         getContent.start();
-       // adapter.notifyDataSetChanged();
     }
 
+    public void updateDatastructure() {
+        int counter = 0;
+        trimmedRSSObjectList = db.getAllEntries();
 
+        while (trimmedRSSObjectList.size() == 0 && counter < 10) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            trimmedRSSObjectList = db.getAllEntries();
+            counter ++;
+        }
+
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -151,7 +140,7 @@ public class ListFragment extends Fragment {
     }
 
     private void getRRS() {
-        @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> getRRSAsync = new AsyncTask<String, String, String>() {
+        /*@SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> getRRSAsync = new AsyncTask<String, String, String>() {
 
             ProgressDialog dialog = new ProgressDialog(getContext());
 
@@ -166,6 +155,7 @@ public class ListFragment extends Fragment {
             protected String doInBackground(String... strings) {
                 String result;
                 HTTPGet getter = new HTTPGet();
+                Log.d(TAG, "HTTPGet just called form ListFragment");
                 result = getter.getData(strings[0]);
 
                 return result.trim();
@@ -176,67 +166,63 @@ public class ListFragment extends Fragment {
             protected void onPostExecute(String s) {
                 dialog.dismiss();
                 rssObject = new Gson().fromJson(s, RSSObject.class);
-                Log.d(TAG, "onPostExecute: aaaa");
+                Log.d(TAG, "onPostExecute:  before if rssObject.getItems.size > 0");
                 if (rssObject.getItems().size() > 0) {
 
-                    Log.d(TAG, "onPostExecute: bbbb");
+                    Log.d(TAG, "onPostExecute: if rssObject.getItems.size > 0");
                     for (Item item: rssObject.getItems() ) {
-                       // trimmedRSSObject.add(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
+                       // trimmedRSSObjectList.add(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
                         upDateDB(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
                     }
-
-
-
                 }
-
             }
         };
+
+        // get list of all URLs to subscribe to
+        // todo wright + read list to Shared preferences
+        String RSSLink = "https://www.nrk.no/toppsaker.rss";
 
         StringBuilder url = new StringBuilder(RSSToJsonAPI);
         url.append(RSSLink);
+        getRRSAsync.execute(url.toString());*/
 
-        getRRSAsync.execute(url.toString());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Scheduler scheduler = new Scheduler();
+                scheduler.onStartJob(null);
+                updateDatastructure();
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                       adapter.notifyDataSetChanged();
+                        Log.d(TAG, "run: runOnUiThread  refresh button  " );
+                    }
+                });
+
+
+            }
+        }).start();
     }
+
+
 
     public void upDateDB(TrimmedRSSObject rss) {
         Log.d(TAG, "doInBackground: " + rss);
-        AsyncTask<TrimmedRSSObject,Void,Void >upDateDBAsync = new AsyncTask<TrimmedRSSObject, Void, Void>() {
+        @SuppressLint("StaticFieldLeak") AsyncTask<TrimmedRSSObject,Void,Void >upDateDBAsync = new AsyncTask<TrimmedRSSObject, Void, Void>() {
             @Override
             protected Void doInBackground(TrimmedRSSObject... objects) {
-
                 for (TrimmedRSSObject temp: objects) {
                     db.insert(temp);
-
                 }
                 return null;
             }
 
         };
-
-
-
-       /* AsyncTask<List<TrimmedRSSObject>,Void, Void> upDateDBAsync = new AsyncTask<List<TrimmedRSSObject>, Void, Void>() {
-            @Override
-            protected Void doInBackground(List<TrimmedRSSObject>... lists) {
-                for (TrimmedRSSObject object: trimmedRSSObject) {
-                    db.insert(object);
-                }
-
-                return null;
-            }
-
-
-        };*/
 
         upDateDBAsync.execute(rss);
     }
 
-
-    public void updateRecyclerView() {
-        adapter = new FeedAdapter(getContext(), trimmedRSSObject);
-        //FeedAdapter adapter = new FeedAdapter(getContext(), rssObject);
-        //adapter.notifyDataSetChanged();
-        recyclerView.setAdapter(adapter);
-    }
 
 }

@@ -25,7 +25,7 @@ public interface itemDao {
     @Delete
     public void delete(TrimmedRSSObject objects);
 
-    @Query("SELECT * FROM trimmedrssobject")
+    @Query("SELECT * FROM trimmedrssobject ORDER BY pupDate DESC")
     public List<TrimmedRSSObject> getTrimmedRSSObjects();
 
     @Query(value = "SELECT * FROM trimmedrssobject WHERE link = :id")

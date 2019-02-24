@@ -1,41 +1,34 @@
 package com.android_lab_2;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
+import com.pkmmte.pkrss.Article;
+import com.pkmmte.pkrss.PkRSS;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
     private SectionsPageAdapter sectionsPageAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager viewPager;
+
+    public static final int  JOB_SERVICE_ID = 111;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +52,46 @@ public class MainActivity extends AppCompatActivity {
         // set starting position to 1 right of default.
         viewPager.setCurrentItem(viewPager.getCurrentItem() +1);
 
+
+        startRSService();
+
+
+
+
+    }
+
+    private void startRSService() {
+
+        int time = getUpdatefrequency();
+        // set service requirements parameters
+        ComponentName componentName = new ComponentName(this, Scheduler.class);
+        JobInfo info = new JobInfo.Builder(JOB_SERVICE_ID, componentName)
+                .setPersisted(true) // run on reboot
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) // require network connected
+                .setPeriodic(time * 60 * 1000)
+                .build();  // register service
+
+        // check if service is registered
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+
+        int result = jobScheduler.schedule(info);
+        if (result == JobScheduler.RESULT_SUCCESS){
+            Log.d("startService", "jobScheduler successes");
+        }
+        else {
+            Log.d("startService",  "jobScheduler failed");
+        }
+    }
+
+    private void stopRSService() {
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(JOB_SERVICE_ID);
+        Log.d(TAG, "stopRSService: ");
+
+    }
+
+    private int getUpdatefrequency() {
+        return 15;
     }
 
     private void setUpViewPager(ViewPager viewPager) {
@@ -101,5 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
 sources:
     Fragments: https://www.youtube.com/watch?v=bNpWGI_hGGg
-    RSS + Recyclerview: https://www.youtube.com/watch?v=APInjVO0WkQ
+    RSS + RecyclerView: https://www.youtube.com/watch?v=APInjVO0WkQ
+    RSS xml parsing: https://www.androidauthority.com/simple-rss-reader-full-tutorial-733245/
+    Service (jobScheduler): https://www.youtube.com/watch?v=3EQWmME-hNA
 */
