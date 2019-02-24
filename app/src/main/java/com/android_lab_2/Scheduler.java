@@ -190,6 +190,6 @@ public class Scheduler extends JobService {
 
         };
 
-        upDateDBAsync.execute();
+        upDateDBAsync.execute(rss);
     }
 }

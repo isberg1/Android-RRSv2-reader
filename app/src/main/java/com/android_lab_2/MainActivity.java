@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         startRSService();
 
+       // stopRSService();
 
 
 
@@ -71,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
                 .setPeriodic(time * 60 * 1000)
                 .build();  // register service
 
-        // check if service is registered
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-
         int result = jobScheduler.schedule(info);
+
+        // check if service is registered
         if (result == JobScheduler.RESULT_SUCCESS){
             Log.d("startService", "jobScheduler successes");
         }

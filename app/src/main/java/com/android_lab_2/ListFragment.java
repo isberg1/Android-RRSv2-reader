@@ -77,7 +77,7 @@ public class ListFragment extends Fragment {
                 if (isNetworkAvailable()){
                     Log.d(TAG, "onClick: Refresh button + network available");
                     getRRS();
-                    adapter.notifyDataSetChanged();
+                   // adapter.notifyDataSetChanged();
                     //setUpRecyclerView();
 
                 }
@@ -196,12 +196,11 @@ public class ListFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                       adapter.notifyDataSetChanged();
+                        adapter = new FeedAdapter(getContext(), trimmedRSSObjectList);
+                        recyclerView.setAdapter(adapter);
                         Log.d(TAG, "run: runOnUiThread  refresh button  " );
                     }
                 });
-
-
             }
         }).start();
     }
