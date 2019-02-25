@@ -119,6 +119,10 @@ public class ListFragment extends Fragment {
     public void updateDatastructure() {
         int counter = 0;
         trimmedRSSObjectList = db.getAllEntries();
+        if (trimmedRSSObjectList.size() < 0) {
+            Log.d(TAG, "updateDatastructure: " + trimmedRSSObjectList.get(0).getPubDate() +" "+ trimmedRSSObjectList.get(0).getTitle());
+        }
+
 
         while (trimmedRSSObjectList.size() == 0 && counter < 10) {
             try {
@@ -186,7 +190,7 @@ public class ListFragment extends Fragment {
         url.append(RSSLink);
         getRRSAsync.execute(url.toString());*/
 
-        new Thread(new Runnable() {
+      /*  new Thread(new Runnable() {
             @Override
             public void run() {
                 Scheduler scheduler = new Scheduler();
@@ -196,13 +200,39 @@ public class ListFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter = new FeedAdapter(getContext(), trimmedRSSObjectList);
-                        recyclerView.setAdapter(adapter);
+                        *//*adapter = new FeedAdapter(getContext(), trimmedRSSObjectList);
+                        recyclerView.setAdapter(adapter);*//*
+                        adapter.notifyDataSetChanged();
                         Log.d(TAG, "run: runOnUiThread  refresh button  " );
                     }
                 });
+
+
             }
-        }).start();
+        }).start();*/
+
+        AsyncTask<Void,Void,Void> getRSSAsync = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Scheduler scheduler = new Scheduler();
+                scheduler.onStartJob(null);
+                updateDatastructure();
+                Log.d(TAG, "doInBackground: After refresh button");
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+                adapter.notifyDataSetChanged();
+                Log.d(TAG, "onPostExecute: After refresh button");
+            }
+        };
+
+        getRSSAsync.execute();
+
+
     }
 
 

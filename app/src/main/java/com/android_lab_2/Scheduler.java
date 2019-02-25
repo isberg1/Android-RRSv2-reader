@@ -60,7 +60,7 @@ public class Scheduler extends JobService {
             public void run() {
                 List<TrimmedRSSObject> parseFeedList;
                 List<String> getURLs = new ArrayList<>();
-                String RSSLink = "https://www.nrk.no/toppsaker.rss";
+                String RSSLink = "https://www.nrk.no/nyheter/siste.rss";
                 getURLs.add(RSSLink);
                 //   getURLs.add(vgRSS);
 
@@ -140,6 +140,7 @@ public class Scheduler extends JobService {
 
                 if (name.equalsIgnoreCase("title")) {
                     title = result;
+
                 } else if (name.equalsIgnoreCase("link")) {
                     link = result;
                 } else if (name.equalsIgnoreCase("pubDate")) {
@@ -151,6 +152,7 @@ public class Scheduler extends JobService {
                 if (title != null && link != null && description != null) {
                     if(isItem) {
                         TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description);
+                        Log.d(TAG, "parseFeed: pubDate: "+ pubDate + "title:" +title + " description: " + description);
                         items.add(item);
                     }
                     else {
@@ -162,6 +164,7 @@ public class Scheduler extends JobService {
                     title = null;
                     link = null;
                     description = null;
+                    pubDate = null;
                     isItem = false;
                 }
             }
@@ -177,7 +180,12 @@ public class Scheduler extends JobService {
 
 
     public void upDateDB(TrimmedRSSObject rss) {
-        Log.d(TAG, "doInBackground: " + rss);
+        Log.d(TAG, "upDateDB: date: " + rss.getPubDate()+ " title:" +rss.getTitle()+ " description: " + rss.getDescription());
+
+        ListFragment.db.insert(rss);
+        Log.d(TAG, "doInBackground: from updateDB in Scheduler.java");
+
+        /*Log.d(TAG, "doInBackground: " + rss);
         @SuppressLint("StaticFieldLeak") AsyncTask<TrimmedRSSObject, Void, Void> upDateDBAsync = new AsyncTask<TrimmedRSSObject, Void, Void>() {
             @Override
             protected Void doInBackground(TrimmedRSSObject... objects) {
@@ -190,6 +198,6 @@ public class Scheduler extends JobService {
 
         };
 
-        upDateDBAsync.execute(rss);
+        upDateDBAsync.execute(rss);*/
     }
 }

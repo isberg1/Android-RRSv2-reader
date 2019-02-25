@@ -19,13 +19,13 @@ public interface itemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insert(TrimmedRSSObject... objects);
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     public void update(TrimmedRSSObject... objects);
 
     @Delete
     public void delete(TrimmedRSSObject objects);
 
-    @Query("SELECT * FROM trimmedrssobject ORDER BY pupDate DESC")
+    @Query("SELECT * FROM trimmedrssobject  Limit 25")
     public List<TrimmedRSSObject> getTrimmedRSSObjects();
 
     @Query(value = "SELECT * FROM trimmedrssobject WHERE link = :id")
