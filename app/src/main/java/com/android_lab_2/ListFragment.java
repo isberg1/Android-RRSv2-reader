@@ -10,16 +10,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android_lab_2.Adapter.FeedAdapter;
 import com.android_lab_2.DataBase.DBHelper;
@@ -30,6 +34,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ListFragment extends Fragment {
@@ -76,13 +81,14 @@ public class ListFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                closeKeyboard();
                 String searchTerm = textView.getText().toString();
 
                 Log.d(TAG, "onClick: searchTerm:" + searchTerm);
                 if (searchTerm.equals("") || searchTerm.equals(" ")) {
                     if (isNetworkAvailable()) {
                         trimmedRSSObjectList.clear();
-                        getRRS();
+                       // getRRS();
                         setUpRecyclerView();
                     }
                 } else {
@@ -105,7 +111,7 @@ public class ListFragment extends Fragment {
                 Log.d(TAG, "filter: run: searchTerm: " + searchTerm);
                 List<TrimmedRSSObject> allEntries =  db.getAllTrimmedRSSObjectsWhereSourceIs("VG");
                 List<TrimmedRSSObject> temp = new ArrayList<>();
-
+                temp.clear();
 
                  for (TrimmedRSSObject object : allEntries) {
                      if (searchMatch(object, searchTerm)) {
@@ -117,35 +123,53 @@ public class ListFragment extends Fragment {
                  if (temp.size() == 0 ) {
                      Log.d(TAG, "filter: run: temp list size:" + temp.size());
                      temp.clear();
-                     temp.add(new TrimmedRSSObject(noMatches,"","",""));
+                     Snackbar.make(getActivity().findViewById(android.R.id.content
+                     ), noMatches,Snackbar.LENGTH_LONG).show();
+
+                    // temp.add(new TrimmedRSSObject(noMatches,"","",""));
                  }
 
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
+                        if (temp.size() == 0){
+                            return;
+                        }
                         trimmedRSSObjectList.clear();
-                        Log.d(TAG, "filter: runOnUiThread: trimmedRSSObjectList: "+ trimmedRSSObjectList.size());
+                        Log.d(TAG, "filter: runOnUiThread: before trimmedRSSObjectList: "+ trimmedRSSObjectList.size());
                         adapter.notifyDataSetChanged();
                         trimmedRSSObjectList.addAll(temp);
-                        adapter.notifyDataSetChanged();
+                        Log.d(TAG, "filter: runOnUiThread: after trimmedRSSObjectList: "+ trimmedRSSObjectList.size());
+                        adapter.notifyItemRangeChanged(0, temp.size()-1);
+                       // adapter.notifyDataSetChanged();
 
                     }
                 });
-
             }
-
         });
 
         thread.start();
-
     }
 
     private boolean searchMatch(TrimmedRSSObject object, String searchTerm) {
 
         Log.d(TAG, "searchMatch: object: " + object.toString() + " searchTerm" + searchTerm);
         Log.d(TAG, "searchMatch: bool: " + Pattern.matches(searchTerm, object.toString()));
-        return Pattern.matches(searchTerm, object.toString());
+
+        Pattern p = Pattern.compile(searchTerm);
+
+        if (p.matcher(object.getTitle()).matches()){
+            return true;
+        }
+        if (p.matcher(object.getPubDate()).matches()){
+            return true;
+        }
+        if (p.matcher(object.getDescription()).matches()){
+            return true;
+        }
+        return false;
     }
 
 
@@ -222,6 +246,15 @@ public class ListFragment extends Fragment {
         };
 
         getRSSAsync.execute();
+    }
+
+
+    private void closeKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
     
 }
