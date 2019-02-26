@@ -44,9 +44,15 @@ public class DBHelper {
     }
 
     public List<TrimmedRSSObject> getAllEntries() {
-        List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getTrimmedRSSObjects();
+        // todo get num from shared preferences
+        int num = 10;
+        List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getTrimmedRSSObjects(num);
         return trimmedRSSObjects;
+    }
 
+    public List<TrimmedRSSObject> getAllTrimmedRSSObjectsWhereSourceIs(String source) {
+        List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getAllTrimmedRSSObjectsWhereSourceIs();
+        return trimmedRSSObjects;
     }
     
     public void dropTable() {

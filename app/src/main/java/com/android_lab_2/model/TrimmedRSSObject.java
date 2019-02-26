@@ -143,6 +143,20 @@ public class TrimmedRSSObject  {
         }
     }
 
+
+    @Override
+    public String toString() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(this.title);
+        stringBuilder.append(" ");
+        stringBuilder.append(this.pubDate);
+        stringBuilder.append(" ");
+        stringBuilder.append(this.description);
+
+        return stringBuilder.toString();
+    }
 }
 
 

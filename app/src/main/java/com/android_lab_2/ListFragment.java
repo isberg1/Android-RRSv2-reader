@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ListFragment extends Fragment {
     private static final String TAG = "ListFragment";
@@ -59,14 +60,14 @@ public class ListFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
 
         textView = view.findViewById(R.id.list_item_List_Tab);
-        textView.setFocusable(false);
+       /* textView.setFocusable(false);
         textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 textView.setFocusableInTouchMode(true);
                 return false;
             }
-        });
+        });*/
 
         db = new DBHelper(getContext(), DATABASE_NAME);
 
@@ -74,12 +75,19 @@ public class ListFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNetworkAvailable()){
-                    Log.d(TAG, "onClick: Refresh button + network available");
-                    getRRS();
-                   // adapter.notifyDataSetChanged();
-                    //setUpRecyclerView();
 
+                String searchTerm = textView.getText().toString();
+
+                Log.d(TAG, "onClick: searchTerm:" + searchTerm);
+                if (searchTerm.equals("") || searchTerm.equals(" ")) {
+                    if (isNetworkAvailable()) {
+                        trimmedRSSObjectList.clear();
+                        getRRS();
+                        setUpRecyclerView();
+                    }
+                } else {
+                    Log.d(TAG, "onClick: Refresh button: after check: " + searchTerm);
+                    filter(searchTerm);
                 }
             }
         });
@@ -87,6 +95,57 @@ public class ListFragment extends Fragment {
         setUpRecyclerView();
 
         return view;
+    }
+
+    public void filter(String searchTerm) {
+       String noMatches = "no matches";
+        Thread thread =new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "filter: run: searchTerm: " + searchTerm);
+                List<TrimmedRSSObject> allEntries =  db.getAllTrimmedRSSObjectsWhereSourceIs("VG");
+                List<TrimmedRSSObject> temp = new ArrayList<>();
+
+
+                 for (TrimmedRSSObject object : allEntries) {
+                     if (searchMatch(object, searchTerm)) {
+                         temp.add(object);
+                         Log.d(TAG, "filter: run: object: " + object.toString());
+                     }
+                 }
+
+                 if (temp.size() == 0 ) {
+                     Log.d(TAG, "filter: run: temp list size:" + temp.size());
+                     temp.clear();
+                     temp.add(new TrimmedRSSObject(noMatches,"","",""));
+                 }
+
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        trimmedRSSObjectList.clear();
+                        Log.d(TAG, "filter: runOnUiThread: trimmedRSSObjectList: "+ trimmedRSSObjectList.size());
+                        adapter.notifyDataSetChanged();
+                        trimmedRSSObjectList.addAll(temp);
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+
+            }
+
+        });
+
+        thread.start();
+
+    }
+
+    private boolean searchMatch(TrimmedRSSObject object, String searchTerm) {
+
+        Log.d(TAG, "searchMatch: object: " + object.toString() + " searchTerm" + searchTerm);
+        Log.d(TAG, "searchMatch: bool: " + Pattern.matches(searchTerm, object.toString()));
+        return Pattern.matches(searchTerm, object.toString());
     }
 
 
@@ -153,10 +212,10 @@ public class ListFragment extends Fragment {
                 return null;
             }
 
+
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-
                 adapter.notifyDataSetChanged();
                 Log.d(TAG, "onPostExecute: After refresh button");
             }
@@ -164,24 +223,5 @@ public class ListFragment extends Fragment {
 
         getRSSAsync.execute();
     }
-
-
-
-    public void upDateDB(TrimmedRSSObject rss) {
-        Log.d(TAG, "doInBackground: " + rss);
-        @SuppressLint("StaticFieldLeak") AsyncTask<TrimmedRSSObject,Void,Void >upDateDBAsync = new AsyncTask<TrimmedRSSObject, Void, Void>() {
-            @Override
-            protected Void doInBackground(TrimmedRSSObject... objects) {
-                for (TrimmedRSSObject temp: objects) {
-                    db.insert(temp);
-                }
-                return null;
-            }
-
-        };
-
-        upDateDBAsync.execute(rss);
-    }
-
-
+    
 }

@@ -16,6 +16,7 @@ import com.android_lab_2.R;
 import com.android_lab_2.model.RSSObject;
 import com.android_lab_2.model.TrimmedRSSObject;
 
+import java.net.URI;
 import java.util.List;
 
 class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -95,7 +96,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             @Override
             public void onClick(View view, int position, boolean isClick) {
                 if (isClick) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trimmedRSSObject.get(position).getLink()));
+
+                    Uri parse;
+                    try {
+                        parse =  Uri.parse(trimmedRSSObject.get(position).getLink());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    if (parse.toString() == "" || parse.toString() == "") {
+                        return;
+                    }
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, parse);
                     context.startActivity(intent);
                 }
             }
