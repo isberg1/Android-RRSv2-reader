@@ -4,10 +4,21 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 @Entity(tableName = "trimmedRSSObject")
 public class TrimmedRSSObject  {
-
+    private static final String TAG = "TrimmedRSSObject";
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "link")
@@ -25,9 +36,36 @@ public class TrimmedRSSObject  {
 
     public TrimmedRSSObject(String title, String pubDate, String link, String description) {
         this.title = title;
-        this.pubDate = pubDate;
+        this.pubDate = dateFormatConverter(pubDate);
         this.link = link;
         this.description = description;
+    }
+
+    public String dateFormatConverter(String oldTime) {
+
+        if (validateJavaDate(oldTime)) {
+            return oldTime;
+        }
+
+
+
+        Log.d(TAG, "dateFormatConverter: oldTime: " + oldTime);
+        // RSS time format
+        DateFormat originalFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
+        // SQLite compatible format
+        DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = originalFormat.parse(oldTime);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.d(TAG, "dateFormatConverter:  pubDate: " + oldTime);
+            return "Unavailable";
+        }
+        String formattedDate = targetFormat.format(date);
+
+        return formattedDate;
     }
 
 
@@ -70,4 +108,45 @@ public class TrimmedRSSObject  {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+
+    public static boolean validateJavaDate(String strDate)
+    {
+        /* Check if date is 'null' */
+        if (strDate.trim().equals(""))
+        {
+            return true;
+        }
+        /* Date is not 'null' */
+        else
+        {
+            /*
+             * Set preferred date format,
+             * For example MM-dd-yyyy, MM.dd.yyyy,dd.MM.yyyy etc.*/
+            SimpleDateFormat sdfrmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdfrmt.setLenient(false);
+            /* Create Date object
+             * parse the string into date
+             */
+            try
+            {
+                Date javaDate = sdfrmt.parse(strDate);
+                System.out.println(strDate+" is valid date format");
+            }
+            /* Date format is invalid */
+            catch (ParseException e)
+            {
+                System.out.println(strDate+" is Invalid Date format");
+                return false;
+            }
+            /* Return true if date format is valid */
+            return true;
+        }
+    }
+
 }
+
+
+
+
