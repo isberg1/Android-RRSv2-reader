@@ -41,7 +41,11 @@ public class Scheduler extends JobService {
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
 
-        db = new DBHelper(this,ListFragment.DATABASE_NAME);
+        if (ListFragment.db == null) {
+            db = new DBHelper(this, ListFragment.DATABASE_NAME);
+        } else {
+            db = ListFragment.db;
+        }
         getNewRRS(params);
 
         //jobFinished(params,false);

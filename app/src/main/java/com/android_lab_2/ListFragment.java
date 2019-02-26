@@ -119,10 +119,9 @@ public class ListFragment extends Fragment {
     public void updateDatastructure() {
         int counter = 0;
         trimmedRSSObjectList = db.getAllEntries();
-        if (trimmedRSSObjectList.size() < 0) {
+        if (trimmedRSSObjectList.size() > 0) {
             Log.d(TAG, "updateDatastructure: " + trimmedRSSObjectList.get(0).getPubDate() +" "+ trimmedRSSObjectList.get(0).getTitle());
         }
-
 
         while (trimmedRSSObjectList.size() == 0 && counter < 10) {
             try {
@@ -144,74 +143,7 @@ public class ListFragment extends Fragment {
     }
 
     private void getRRS() {
-        /*@SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> getRRSAsync = new AsyncTask<String, String, String>() {
-
-            ProgressDialog dialog = new ProgressDialog(getContext());
-
-
-            @Override
-            protected void onPreExecute() {
-                dialog.setMessage("fetching data");
-                dialog.show();
-            }
-
-            @Override
-            protected String doInBackground(String... strings) {
-                String result;
-                HTTPGet getter = new HTTPGet();
-                Log.d(TAG, "HTTPGet just called form ListFragment");
-                result = getter.getData(strings[0]);
-
-                return result.trim();
-            }
-
-
-            @Override
-            protected void onPostExecute(String s) {
-                dialog.dismiss();
-                rssObject = new Gson().fromJson(s, RSSObject.class);
-                Log.d(TAG, "onPostExecute:  before if rssObject.getItems.size > 0");
-                if (rssObject.getItems().size() > 0) {
-
-                    Log.d(TAG, "onPostExecute: if rssObject.getItems.size > 0");
-                    for (Item item: rssObject.getItems() ) {
-                       // trimmedRSSObjectList.add(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
-                        upDateDB(new TrimmedRSSObject(item.getTitle(),item.getPubDate(),item.getLink(),item.getDescription()));
-                    }
-                }
-            }
-        };
-
-        // get list of all URLs to subscribe to
-        // todo wright + read list to Shared preferences
-        String RSSLink = "https://www.nrk.no/toppsaker.rss";
-
-        StringBuilder url = new StringBuilder(RSSToJsonAPI);
-        url.append(RSSLink);
-        getRRSAsync.execute(url.toString());*/
-
-      /*  new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Scheduler scheduler = new Scheduler();
-                scheduler.onStartJob(null);
-                updateDatastructure();
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        *//*adapter = new FeedAdapter(getContext(), trimmedRSSObjectList);
-                        recyclerView.setAdapter(adapter);*//*
-                        adapter.notifyDataSetChanged();
-                        Log.d(TAG, "run: runOnUiThread  refresh button  " );
-                    }
-                });
-
-
-            }
-        }).start();*/
-
-        AsyncTask<Void,Void,Void> getRSSAsync = new AsyncTask<Void, Void, Void>() {
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void,Void,Void> getRSSAsync = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 Scheduler scheduler = new Scheduler();
@@ -231,8 +163,6 @@ public class ListFragment extends Fragment {
         };
 
         getRSSAsync.execute();
-
-
     }
 
 
