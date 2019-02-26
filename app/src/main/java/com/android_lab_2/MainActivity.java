@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android_lab_2.DataBase.DBHelper;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.PkRSS;
 
@@ -28,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
 
     public static final int  JOB_SERVICE_ID = 111;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         startRSService();
 
-       // stopRSService();
+      //  stopRSService();
 
 
 

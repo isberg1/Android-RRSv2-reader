@@ -110,7 +110,7 @@ public class TrimmedRSSObject  {
     }
 
 
-
+// source: https://beginnersbook.com/2013/05/java-date-format-validation/
     public static boolean validateJavaDate(String strDate)
     {
         /* Check if date is 'null' */
@@ -132,12 +132,10 @@ public class TrimmedRSSObject  {
             try
             {
                 Date javaDate = sdfrmt.parse(strDate);
-                System.out.println(strDate+" is valid date format");
             }
             /* Date format is invalid */
             catch (ParseException e)
             {
-                System.out.println(strDate+" is Invalid Date format");
                 return false;
             }
             /* Return true if date format is valid */

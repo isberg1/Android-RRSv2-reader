@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Xml;
 
+import com.android_lab_2.DataBase.DBHelper;
 import com.android_lab_2.model.ParseFeed;
 import com.android_lab_2.model.RSSObject;
 import com.android_lab_2.model.TrimmedRSSObject;
@@ -24,9 +25,9 @@ import java.util.List;
 public class Scheduler extends JobService {
     private static final String TAG = "Scheduler";
     private boolean jobCancelled = false;
+    DBHelper db;
 
-
-    @Override
+   /* @Override
     public void onCreate() {
         super.onCreate();
     }
@@ -34,14 +35,16 @@ public class Scheduler extends JobService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
-    }
+    }*/
 
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
 
+        db = new DBHelper(this,ListFragment.DATABASE_NAME);
         getNewRRS(params);
 
+        //jobFinished(params,false);
         return true;
     }
 
@@ -182,22 +185,9 @@ public class Scheduler extends JobService {
     public void upDateDB(TrimmedRSSObject rss) {
         Log.d(TAG, "upDateDB: date: " + rss.getPubDate()+ " title:" +rss.getTitle()+ " description: " + rss.getDescription());
 
-        ListFragment.db.insert(rss);
+        db.insert(rss);
+        //ListFragment.db.insert(rss);
         Log.d(TAG, "doInBackground: from updateDB in Scheduler.java");
 
-        /*Log.d(TAG, "doInBackground: " + rss);
-        @SuppressLint("StaticFieldLeak") AsyncTask<TrimmedRSSObject, Void, Void> upDateDBAsync = new AsyncTask<TrimmedRSSObject, Void, Void>() {
-            @Override
-            protected Void doInBackground(TrimmedRSSObject... objects) {
-                for (TrimmedRSSObject temp : objects) {
-                    ListFragment.db.insert(temp);
-                    Log.d(TAG, "doInBackground: from updateDB in Scheduler.java");
-                }
-                return null;
-            }
-
-        };
-
-        upDateDBAsync.execute(rss);*/
     }
 }

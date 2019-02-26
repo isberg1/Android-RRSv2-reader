@@ -1,6 +1,5 @@
 package com.android_lab_2.Interface;
 
-
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
