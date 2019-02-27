@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -98,9 +99,23 @@ public class ListFragment extends Fragment {
             }
         });
 
-        setUpRecyclerView();
+        //setUpRecyclerView();
+
+        if(getUserVisibleHint()){ // fragment is visible
+            setUpRecyclerView();
+        }
 
         return view;
+    }
+
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) { // fragment is visible and have created
+            setUpRecyclerView();
+        }
     }
 
     public void filter(String searchTerm) {
@@ -126,7 +141,6 @@ public class ListFragment extends Fragment {
                      Snackbar.make(getActivity().findViewById(android.R.id.content
                      ), noMatches,Snackbar.LENGTH_LONG).show();
 
-                    // temp.add(new TrimmedRSSObject(noMatches,"","",""));
                  }
 
 
@@ -143,8 +157,6 @@ public class ListFragment extends Fragment {
                         trimmedRSSObjectList.addAll(temp);
                         Log.d(TAG, "filter: runOnUiThread: after trimmedRSSObjectList: "+ trimmedRSSObjectList.size());
                         adapter.notifyItemRangeChanged(0, temp.size()-1);
-                       // adapter.notifyDataSetChanged();
-
                     }
                 });
             }
@@ -201,7 +213,10 @@ public class ListFragment extends Fragment {
 
     public void updateDatastructure() {
         int counter = 0;
-        trimmedRSSObjectList = db.getAllEntries();
+        String numString = readPreferences(R.string.rss_list_length_key);
+        Integer numEntries = Integer.parseInt(numString);
+
+        trimmedRSSObjectList = db.getAllEntries(numEntries);
         if (trimmedRSSObjectList.size() > 0) {
             Log.d(TAG, "updateDatastructure: " + trimmedRSSObjectList.get(0).getPubDate() +" "+ trimmedRSSObjectList.get(0).getTitle());
         }
@@ -212,11 +227,19 @@ public class ListFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            trimmedRSSObjectList = db.getAllEntries();
+            trimmedRSSObjectList = db.getAllEntries(numEntries);
             counter ++;
         }
 
     }
+    public String readPreferences(int key) {
+
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String str = sharedPref.getString(getString(key),"");
+
+        return str;
+    }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -256,5 +279,6 @@ public class ListFragment extends Fragment {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-    
+
+
 }

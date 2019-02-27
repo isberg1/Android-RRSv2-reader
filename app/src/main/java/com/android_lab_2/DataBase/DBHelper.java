@@ -2,6 +2,7 @@ package com.android_lab_2.DataBase;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android_lab_2.model.TrimmedRSSObject;
 
@@ -43,12 +44,13 @@ public class DBHelper {
         return trimmedRSSObjectById;
     }
 
-    public List<TrimmedRSSObject> getAllEntries() {
+    public List<TrimmedRSSObject> getAllEntries(int num) {
         // todo get num from shared preferences
-        int num = 10;
+        //int num = 10;
         List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getTrimmedRSSObjects(num);
         return trimmedRSSObjects;
     }
+
 
     public List<TrimmedRSSObject> getAllTrimmedRSSObjectsWhereSourceIs(String source) {
         List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getAllTrimmedRSSObjectsWhereSourceIs();

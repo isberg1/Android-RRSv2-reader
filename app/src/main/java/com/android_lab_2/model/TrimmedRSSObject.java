@@ -29,9 +29,8 @@ public class TrimmedRSSObject  {
     public  String  pubDate;
     @ColumnInfo(name = "description")
     public  String  description;
-   // public  Object enclosure;
-
-
+    @ColumnInfo(name = "sortValue")
+    public long sortValue;
 
 
     public TrimmedRSSObject(String title, String pubDate, String link, String description) {
@@ -39,6 +38,31 @@ public class TrimmedRSSObject  {
         this.pubDate = dateFormatConverter(pubDate);
         this.link = link;
         this.description = description;
+        this.sortValue = getSortingValueFromDate(this.pubDate);
+    }
+
+    private long getSortingValueFromDate(String date) {
+        date = date.trim();
+        String[] stage1 = date.split(" ");
+        String[] stage2 = stage1[0].split("-");
+        String[] stage3 = stage1[1].split(":");
+
+        String sortNum = date.replaceAll("-","");
+        sortNum = sortNum.replaceAll(" ", "");
+        sortNum = sortNum.replaceAll(":", "");
+
+
+        Log.d(TAG, "getSortingValueFromDate: " + sortNum);
+
+        Long num =new Long(0);
+        try {
+            num = Long.parseLong(sortNum);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Log.d(TAG, "getSortingValueFromDate: parisng sortNum failed");
+        }
+
+        return num;
     }
 
     public String dateFormatConverter(String oldTime) {

@@ -3,23 +3,18 @@ package com.android_lab_2;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.android_lab_2.DataBase.DBHelper;
-import com.pkmmte.pkrss.Article;
-import com.pkmmte.pkrss.PkRSS;
-
-import java.io.IOException;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -53,24 +48,18 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(viewPager.getCurrentItem() +1);
 
 
+
         startRSService();
+
+
 
       //  stopRSService();
 
-
-
     }
 
-    private void startRSService() {
+    public void startRSService() {
 
-        int time = getUpdatefrequency();
-        // set service requirements parameters
-        ComponentName componentName = new ComponentName(this, Scheduler.class);
-        JobInfo info = new JobInfo.Builder(JOB_SERVICE_ID, componentName)
-                .setPersisted(true) // run on reboot
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) // require network connected
-                .setPeriodic(time * 60 * 1000)
-                .build();  // register service
+        JobInfo info = makeService();
 
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         int result = jobScheduler.schedule(info);
@@ -84,15 +73,75 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public JobInfo makeService() {
+
+        int time = getUpdatefrequency();
+        // set service requirements parameters
+        ComponentName componentName = new ComponentName(this, Scheduler.class);
+        JobInfo info = new JobInfo.Builder(JOB_SERVICE_ID, componentName)
+                .setPersisted(true) // run on reboot
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) // require network connected
+                .setPeriodic(time * 60 * 1000)
+                .build();  // register service
+
+        return info;
+    }
+
+
+    public  int getUpdatefrequency() {
+        String stringTime = readPreferences(R.string.update_frequency_key);
+        Log.d(TAG, "getUpdatefrequency: stringTime: " + stringTime);
+        int newTime = convertTimeStringToInt(stringTime);
+
+        return newTime;
+    }
+
+
+    public static int convertTimeStringToInt(String selected) {
+        String timeHour = "hour";
+
+        if (selected.equals("")) {
+            return 15;
+        }
+
+        String[] temp = selected.split(" ");
+        selected = temp[0];
+
+
+
+        int toMinutes = 1;
+
+        if (temp[1].equals(timeHour)) {
+            toMinutes = 60;
+        }
+
+        int baseNumber;
+        try {
+            baseNumber = Integer.getInteger(selected);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "onItemSelected: converting string to Integer failed");
+            return 15;
+        }
+
+        int newTime = baseNumber * toMinutes;
+
+        return newTime;
+    }
+
+    public  String readPreferences(int key) {
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String str = sharedPref.getString(getString(key),"");
+
+        return str;
+    }
+
     private void stopRSService() {
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         jobScheduler.cancel(JOB_SERVICE_ID);
         Log.d(TAG, "stopRSService: ");
 
-    }
-
-    private int getUpdatefrequency() {
-        return 15;
     }
 
     private void setUpViewPager(ViewPager viewPager) {
@@ -101,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new SourceFragment(), "Source");
         adapter.addFragment(new ListFragment(), "List");
-        adapter.addFragment(new FavoriteFragment(), "Favorite");
+        adapter.addFragment(new PreferencesFragment(), "Preferences");
         viewPager.setAdapter(adapter);
     }
 
@@ -122,13 +171,14 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            //startActivityForResult();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }
 
 /*
@@ -138,4 +188,7 @@ sources:
     RSS + RecyclerView: https://www.youtube.com/watch?v=APInjVO0WkQ
     RSS xml parsing: https://www.androidauthority.com/simple-rss-reader-full-tutorial-733245/
     Service (jobScheduler): https://www.youtube.com/watch?v=3EQWmME-hNA
+    Load date in fragment when visible:
+        https://viblo.asia/p/my-solution-for-loading-data-when-fragment-visible-using-setuservisiblehint-yMnKM3PDl7P
+     
 */

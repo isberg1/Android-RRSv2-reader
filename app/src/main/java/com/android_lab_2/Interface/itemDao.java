@@ -27,7 +27,7 @@ public interface itemDao {
     @Query("SELECT * FROM trimmedrssobject")
     public List<TrimmedRSSObject> getAllTrimmedRSSObjectsWhereSourceIs();
 
-    @Query("SELECT * FROM trimmedrssobject ORDER BY date(pupDate) DESC Limit :num")
+    @Query("SELECT * FROM trimmedrssobject ORDER BY sortValue DESC Limit :num")
     public List<TrimmedRSSObject> getTrimmedRSSObjects(int num);
 
     @Query(value = "SELECT * FROM trimmedrssobject WHERE link = :id")

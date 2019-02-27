@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/list_item_List_Tab"
+                    android:hint=" Refresh Rate  "
+                    android:layout_gravity="start"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:textSize="20sp"/>
+
+                <Spinner
+                    android:id="@+id/spinner_update_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40sp"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:entries="@array/update_options"
+                    />
+
+            </TableRow>
+
+            <TextView
+                android:id="@+id/text_preferences_currently_selected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Currently running every:  "
+                android:textSize="20sp"/>
+
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/black"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/select_list_size"
+                android:textSize="15dp"
+                android:hint="enter maxium number of enties in RSS list"
+                android:inputType="number"
+                android:maxLength="2"
+                />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <Button
+                android:id="@+id/button_preferences_apply_changes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apply changes"
+                android:textSize="20sp"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_gravity="bottom" />
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</android.support.constraint.ConstraintLayout>
