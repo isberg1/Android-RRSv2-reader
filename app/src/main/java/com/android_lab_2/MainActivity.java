@@ -47,12 +47,7 @@ public class MainActivity extends AppCompatActivity {
         // set starting position to 1 right of default.
         viewPager.setCurrentItem(viewPager.getCurrentItem() +1);
 
-
-
         startRSService();
-
-
-
       //  stopRSService();
 
     }
@@ -91,43 +86,11 @@ public class MainActivity extends AppCompatActivity {
     public  int getUpdatefrequency() {
         String stringTime = readPreferences(R.string.update_frequency_key);
         Log.d(TAG, "getUpdatefrequency: stringTime: " + stringTime);
-        int newTime = convertTimeStringToInt(stringTime);
+        int newTime = PreferencesFragment.convertTimeStringToInt(stringTime);
 
         return newTime;
     }
 
-
-    public static int convertTimeStringToInt(String selected) {
-        String timeHour = "hour";
-
-        if (selected.equals("")) {
-            return 15;
-        }
-
-        String[] temp = selected.split(" ");
-        selected = temp[0];
-
-
-
-        int toMinutes = 1;
-
-        if (temp[1].equals(timeHour)) {
-            toMinutes = 60;
-        }
-
-        int baseNumber;
-        try {
-            baseNumber = Integer.getInteger(selected);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(TAG, "onItemSelected: converting string to Integer failed");
-            return 15;
-        }
-
-        int newTime = baseNumber * toMinutes;
-
-        return newTime;
-    }
 
     public  String readPreferences(int key) {
 
@@ -190,5 +153,5 @@ sources:
     Service (jobScheduler): https://www.youtube.com/watch?v=3EQWmME-hNA
     Load date in fragment when visible:
         https://viblo.asia/p/my-solution-for-loading-data-when-fragment-visible-using-setuservisiblehint-yMnKM3PDl7P
-     
+
 */

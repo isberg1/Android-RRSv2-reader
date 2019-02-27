@@ -30,9 +30,9 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/list_item_List_Tab"
-                    android:hint=" Refresh Rate  "
+                    android:text=" Refresh Rate  "
                     android:layout_gravity="start"
                     android:inputType="textPersonName"
                     android:maxLines="1"
@@ -41,7 +41,7 @@
                 <Spinner
                     android:id="@+id/spinner_update_options"
                     android:layout_width="wrap_content"
-                    android:layout_height="40sp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_weight="1"
                     android:entries="@array/update_options"
@@ -67,15 +67,35 @@
                 android:layout_height="3dp"
                 android:background="@android:color/black"/>
 
-            <EditText
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/select_list_size"
-                android:textSize="15dp"
-                android:hint="enter maxium number of enties in RSS list"
-                android:inputType="number"
-                android:maxLength="2"
-                />
+                android:layout_height="50dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=" Maximum entries in RSS list:  "
+                    android:layout_gravity="start"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:textSize="15dp"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/select_list_size"
+                    android:hint=""
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:layout_gravity="end"
+                    android:textAlignment="center"
+                    />
+
+
+
+            </TableRow>
+
+
 
             <Space
                 android:layout_width="match_parent"

@@ -21,6 +21,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 public class PreferencesFragment extends Fragment {
@@ -43,15 +49,28 @@ public class PreferencesFragment extends Fragment {
         spinner = view.findViewById(R.id.spinner_update_options);
         if (spinner == null)
             Log.d(TAG, "onCreateView: spinner is null");
-        ArrayAdapter<String> adapter;
-        String [] temp= getResources().getStringArray(R.array.update_options);
 
-        adapter = new ArrayAdapter<String>(view.getContext(),R.layout.spinner_layout,temp);
+
+        List<String> entries = new ArrayList<>();
+        entries.add(" ");
+        String [] temp= getResources().getStringArray(R.array.update_options);
+        entries.addAll(Arrays.asList(temp));
+
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(view.getContext(),R.layout.spinner_layout,entries);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedSpinnerItem = (String) spinner.getSelectedItem();
+
+                String str = (String) spinner.getSelectedItem();
+
+                if (str.equals("")|| str.equals(" ")) {
+                    selectedSpinnerItem = null;
+                    return;
+                }
+
+                selectedSpinnerItem= str;
             }
 
             @Override
@@ -90,10 +109,14 @@ public class PreferencesFragment extends Fragment {
 
     public void applyNewPreferences() {
 
-        if (selectedSpinnerItem != null) {
-            writePreferences(R.string.update_frequency_key, selectedSpinnerItem);
-            updateServiceTimeDisplay();
-            startRSService();
+        if (selectedSpinnerItem != null ) {
+            if ( !selectedSpinnerItem.equals("") || !selectedSpinnerItem.equals(" ")) {
+                writePreferences(R.string.update_frequency_key, selectedSpinnerItem);
+                updateServiceTimeDisplay();
+                startRSService();
+                selectedSpinnerItem = null;
+            }
+
         }
 
 
@@ -195,7 +218,7 @@ public class PreferencesFragment extends Fragment {
     public static int convertTimeStringToInt(String selected) {
         String timeHour = "hour";
 
-        if (selected.equals("")) {
+        if (selected.equals("") || selected.equals(" ") ||!Pattern.matches("[1-9]*\\s[a-zA-Z]*", selected)) {
             return 15;
         }
 
@@ -207,9 +230,7 @@ public class PreferencesFragment extends Fragment {
             toMinutes = 60;
         }
 
-        if (temp[0] == null){
-            Log.d(TAG, "convertTimeStringToInt: temp er 0");
-        }
+
         int baseNumber;
         try {
             Log.d(TAG, "convertTimeStringToInt: temp[0]: " + temp[0]);
