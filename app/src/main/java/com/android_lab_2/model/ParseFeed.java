@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ParseFeed {
 
-    public List<TrimmedRSSObject> parseFeed(InputStream inputStream) throws XmlPullParserException,
+    public List<TrimmedRSSObject> parseFeed(InputStream inputStream, String currentURL) throws XmlPullParserException,
             IOException {
         String title = null;
         String link = null;
@@ -68,7 +68,7 @@ public class ParseFeed {
 
                 if (title != null && link != null && description != null) {
                     if(isItem) {
-                        TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description);
+                        TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description, currentURL);
                         items.add(item);
                     }
                     else {

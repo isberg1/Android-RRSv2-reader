@@ -120,7 +120,7 @@ public class Scheduler extends JobService {
 
                         URL url = new URL(currentURL);
                         InputStream inputStream = url.openConnection().getInputStream();
-                        parseFeedList = parseFeed(inputStream);
+                        parseFeedList = parseFeed(inputStream, currentURL);
 
                         for (TrimmedRSSObject temp : parseFeedList){
                             if (jobCancelled) {
@@ -143,7 +143,7 @@ public class Scheduler extends JobService {
 
     }
 
-    public static List<TrimmedRSSObject> parseFeed(InputStream inputStream) throws XmlPullParserException,
+    public static List<TrimmedRSSObject> parseFeed(InputStream inputStream, String currentURL) throws XmlPullParserException,
             IOException {
         String title = null;
         String link = null;
@@ -199,7 +199,7 @@ public class Scheduler extends JobService {
 
                 if (title != null && link != null && description != null && pubDate !=null) {
                     if(isItem) {
-                        TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description);
+                        TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description, currentURL);
                         Log.d(TAG, "parseFeed: pubDate: "+ pubDate + "title:" +title + " description: " + description);
                         items.add(item);
                     }

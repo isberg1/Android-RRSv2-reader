@@ -40,14 +40,17 @@ import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 public class PreferencesFragment extends Fragment {
     private static final String TAG = "PreferencesFragment";
-    private String selectedSpinnerItem;
+    private String selectedRefreshRateSpinnerItem;
+    private String  selectedCurentUrlSpinnerItem;
 
-    private Spinner spinner= null;
+    private Spinner spinnerRefreshRate = null;
+    private Spinner spinnerRssSource = null;
     private TextView serviceTimeDisplay;
     private Button applyChanges;
     private EditText selectListSize;
     private EditText newUrlSource = null;
     ArrayAdapter<String> adapter;
+
 
 
     @Nullable
@@ -56,38 +59,8 @@ public class PreferencesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.preferences_tab,container,false);
 
-        spinner = view.findViewById(R.id.spinner_update_options);
-        if (spinner == null)
-            Log.d(TAG, "onCreateView: spinner is null");
+        setUpSpinnerRefreshRate(view);
 
-
-        List<String> entries = new ArrayList<>();
-        entries.add(" ");
-        String [] temp= getResources().getStringArray(R.array.update_options);
-        entries.addAll(Arrays.asList(temp));
-
-
-        adapter = new ArrayAdapter<String>(view.getContext(),R.layout.spinner_layout,entries);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                String str = (String) spinner.getSelectedItem();
-
-                if (str.equals("")|| str.equals(" ")) {
-                    selectedSpinnerItem = null;
-                    return;
-                }
-
-                selectedSpinnerItem= str;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         applyChanges = view.findViewById(R.id.button_preferences_apply_changes);
         applyChanges.setOnClickListener(new View.OnClickListener() {
@@ -100,14 +73,91 @@ public class PreferencesFragment extends Fragment {
 
         serviceTimeDisplay = view.findViewById(R.id.text_preferences_currently_selected);
         updateServiceTimeDisplay();
-
         selectListSize = view.findViewById(R.id.select_list_size);
-
-
         newUrlSource = view.findViewById(R.id.new_url_source);
 
+        setUpSpinnerRssSource(view);
         
         return view;
+    }
+
+    private void setUpSpinnerRssSource(View view) {
+        spinnerRssSource = view.findViewById(R.id.select_rss_source);
+
+        String urlCSL = readPreferences(R.string.rss_source_key);
+        String currentlySelectedURL = readPreferences(R.string.rss_source_currently_selected_url);
+        Log.d(TAG, "setUpSpinnerRssSource: urlCSL: " + urlCSL);
+        List<String> oldUrlList = Arrays.asList(urlCSL.split(getString(R.string.rss_source_list_separator)));
+        List<String> newUrlList = new ArrayList<>();
+        newUrlList.add(currentlySelectedURL);
+
+        Log.d(TAG, "setUpSpinnerRssSource: currentlySelectedURL: " + currentlySelectedURL);
+
+        for (String str : oldUrlList) {
+            if (str.equals(currentlySelectedURL)){
+                continue;
+            }
+            newUrlList.add(str);
+        }
+
+        ArrayAdapter<String> rssSelectionAdapter;
+        rssSelectionAdapter = new ArrayAdapter<>(view.getContext(),R.layout.support_simple_spinner_dropdown_item, newUrlList);
+        spinnerRssSource.setAdapter(rssSelectionAdapter);
+       spinnerRssSource.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+           @Override
+           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               String str = (String) spinnerRssSource.getSelectedItem();
+
+               if (str.equals("")|| str.equals(" ")) {
+                   selectedCurentUrlSpinnerItem = null;
+                   return;
+               }
+
+               selectedCurentUrlSpinnerItem = str;
+
+           }
+
+           @Override
+           public void onNothingSelected(AdapterView<?> parent) {
+
+           }
+       });
+
+    }
+
+    private void setUpSpinnerRefreshRate(View view) {
+        spinnerRefreshRate = view.findViewById(R.id.spinner_update_options);
+        if (spinnerRefreshRate == null)
+            Log.d(TAG, "onCreateView: spinnerRefreshRate is null");
+
+        List<String> entries = new ArrayList<>();
+        entries.add(" ");
+        String [] temp= getResources().getStringArray(R.array.update_options);
+        entries.addAll(Arrays.asList(temp));
+
+
+        adapter = new ArrayAdapter<String>(view.getContext(),R.layout.spinner_layout,entries);
+        // adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+        spinnerRefreshRate.setAdapter(adapter);
+        spinnerRefreshRate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String str = (String) spinnerRefreshRate.getSelectedItem();
+
+                if (str.equals("")|| str.equals(" ")) {
+                    selectedRefreshRateSpinnerItem = null;
+                    return;
+                }
+
+                selectedRefreshRateSpinnerItem = str;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void updateServiceTimeDisplay() {
@@ -124,6 +174,16 @@ public class PreferencesFragment extends Fragment {
         setNewRefreshRate();
         setNewNumberOfEntries();
         addNewUrlSource();
+        setNewCurrentlySelectedURL();
+
+    }
+
+    private void setNewCurrentlySelectedURL() {
+        if (selectedCurentUrlSpinnerItem !=null) {
+            if (!selectedCurentUrlSpinnerItem.equals("") && !selectedCurentUrlSpinnerItem.equals(" ")) {
+                writePreferences(R.string.rss_source_currently_selected_url, selectedCurentUrlSpinnerItem);
+            }
+        }
 
     }
 
@@ -157,7 +217,7 @@ public class PreferencesFragment extends Fragment {
             protected Boolean doInBackground(URL... urls) {
                 try {
                     InputStream inputStream = url.openConnection().getInputStream();
-                    Scheduler.parseFeed(inputStream);
+                    Scheduler.parseFeed(inputStream, url.toString());
 
                 } catch (IOException e) {
                     Log.d(TAG, ": new entry failed: IOException: value: " + url.toString());
@@ -217,13 +277,13 @@ public class PreferencesFragment extends Fragment {
     }
 
     private void setNewRefreshRate() {
-        if (selectedSpinnerItem != null ) {
-            if ( !selectedSpinnerItem.equals("") && !selectedSpinnerItem.equals(" ")) {
-                writePreferences(R.string.update_frequency_key, selectedSpinnerItem);
+        if (selectedRefreshRateSpinnerItem != null ) {
+            if ( !selectedRefreshRateSpinnerItem.equals("") && !selectedRefreshRateSpinnerItem.equals(" ")) {
+                writePreferences(R.string.update_frequency_key, selectedRefreshRateSpinnerItem);
                 updateServiceTimeDisplay();
                 startRSService();
-                selectedSpinnerItem = null;
-                spinner.setSelection(0);
+                selectedRefreshRateSpinnerItem = null;
+                spinnerRefreshRate.setSelection(0);
             }
         }
 

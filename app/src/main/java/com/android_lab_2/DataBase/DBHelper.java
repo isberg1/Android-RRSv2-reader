@@ -44,10 +44,10 @@ public class DBHelper {
         return trimmedRSSObjectById;
     }
 
-    public List<TrimmedRSSObject> getAllEntries(int num) {
+    public List<TrimmedRSSObject> getAllEntries(int num, String origin) {
         // todo get num from shared preferences
         //int num = 10;
-        List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getTrimmedRSSObjects(num);
+        List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getTrimmedRSSObjects(num, origin);
         return trimmedRSSObjects;
     }
 

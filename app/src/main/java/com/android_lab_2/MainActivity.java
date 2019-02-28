@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         String listLength = readPreferences(R.string.rss_list_length_key);
         String rrsSources = readPreferences(R.string.rss_source_key);
         String serviceTime = readPreferences(R.string.update_frequency_key);
+        String currentlySelectedURL = readPreferences(R.string.rss_source_currently_selected_url);
 
         if (listLength.equals("") || listLength.equals(" ")) {
             writePreferences(R.string.rss_list_length_key, getString(R.string.default_value_rss_list_length));
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if (serviceTime.equals("") || serviceTime.equals(" ")) {
             writePreferences(R.string.update_frequency_key, getString(R.string.default_value_update_frequency));
+        }
+        if (currentlySelectedURL.equals("") || currentlySelectedURL.equals(" ")) {
+            writePreferences(R.string.rss_source_currently_selected_url, getString(R.string.default_value_rss_source));
         }
     }
 

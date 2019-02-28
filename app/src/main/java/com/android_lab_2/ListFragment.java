@@ -92,7 +92,6 @@ public class ListFragment extends Fragment {
             }
         });
 
-        //setUpRecyclerView();
 
         if(getUserVisibleHint()){ // fragment is visible
             setUpRecyclerView();
@@ -209,7 +208,9 @@ public class ListFragment extends Fragment {
         String numString = readPreferences(R.string.rss_list_length_key);
         Integer numEntries = Integer.parseInt(numString);
 
-        trimmedRSSObjectList = db.getAllEntries(numEntries);
+        String origin = readPreferences(R.string.rss_source_currently_selected_url);
+
+        trimmedRSSObjectList = db.getAllEntries(numEntries,origin);
         if (trimmedRSSObjectList.size() > 0) {
             Log.d(TAG, "updateDatastructure: " + trimmedRSSObjectList.get(0).getPubDate() +" "+ trimmedRSSObjectList.get(0).getTitle());
         }
@@ -220,7 +221,7 @@ public class ListFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            trimmedRSSObjectList = db.getAllEntries(numEntries);
+            trimmedRSSObjectList = db.getAllEntries(numEntries, origin);
             counter ++;
         }
 

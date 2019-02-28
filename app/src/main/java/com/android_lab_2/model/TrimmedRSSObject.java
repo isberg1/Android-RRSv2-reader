@@ -33,13 +33,35 @@ public class TrimmedRSSObject  {
     public long sortValue;
 
 
-    public TrimmedRSSObject(String title, String pubDate, String link, String description) {
+    public TrimmedRSSObject(String title, String pubDate, String link, String description, String origin) {
         this.title = title.trim();
         this.pubDate = dateFormatConverter(pubDate);
         this.link = link.trim();
         this.description = description.trim();
         this.sortValue = getSortingValueFromDate(this.pubDate);
+        this.origin = origin;
     }
+
+    public long getSortValue() {
+        return sortValue;
+    }
+
+    public void setSortValue(long sortValue) {
+        this.sortValue = sortValue;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    @ColumnInfo(name = "origin")
+    public String origin;
+
+
 
     private long getSortingValueFromDate(String date) {
         date = date.trim();
