@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Xml;
 
@@ -18,29 +20,55 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Scheduler extends JobService {
     private static final String TAG = "Scheduler";
     private boolean jobCancelled = false;
-    DBHelper db;
+    private DBHelper db;
+    private SharedPreferences  sharedPreferences;
+    private String [] rssSourceList;
+    private boolean isRunningManually = false;
+    private List<String> getURLs = new ArrayList<>();
 
-   /* @Override
-    public void onCreate() {
-        super.onCreate();
+
+    public boolean manualJob(JobParameters params, URL url) {
+        isRunningManually = true;
+
+        // ensure only 1 instance of the database exists
+        if (ListFragment.db == null) {
+            db = new DBHelper(this, ListFragment.DATABASE_NAME);
+        } else {
+            db = ListFragment.db;
+        }
+
+        try {
+            getNewRRS(params);
+        } catch (Exception e) {
+            Log.d(TAG, "manualJob: job rejected: ");
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-    }*/
 
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String temp = sharedPreferences.getString(getString(R.string.rss_source_key), getString(R.string.default_value_rss_source));
+        rssSourceList = temp.split(getString(R.string.rss_source_list_separator));
+        Log.d(TAG, "onStartJob: read rss_source_key: value: " + temp);
+        getURLs.addAll(Arrays.asList(rssSourceList));
+
+        // ensure only 1 instance of the database exists
         if (ListFragment.db == null) {
             db = new DBHelper(this, ListFragment.DATABASE_NAME);
         } else {
@@ -48,7 +76,6 @@ public class Scheduler extends JobService {
         }
         getNewRRS(params);
 
-        //jobFinished(params,false);
         return true;
     }
 
@@ -65,44 +92,58 @@ public class Scheduler extends JobService {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+
                 List<TrimmedRSSObject> parseFeedList;
-                List<String> getURLs = new ArrayList<>();
-                String RSSLink = "https://www.nrk.no/nyheter/siste.rss";
-                getURLs.add(RSSLink);
-                //   getURLs.add(vgRSS);
 
-                if (jobCancelled) {
-                    Log.d(TAG, "run: jobCancelled == true");
-                    return;
-                }
+                String RSSLink = "https://www.nrk.no/nyheter/siste.rss";// "https://stackoverflow.com/questions/11072576/set-selected-item-of-spinner-programmatically";    //"https://www.vg.no/rss/feed/";            //
+               // getURLs.add("https://www.nrk.no/nyheter/siste.rss");
+               // getURLs.add("https://www.vg.no/rss/feed/");
 
-                try {
-                    if(!RSSLink.startsWith("http://") && !RSSLink.startsWith("https://"))
-                        RSSLink = "http://" + RSSLink;
 
-                    URL url = new URL(RSSLink);
-                    InputStream inputStream = url.openConnection().getInputStream();
-                    parseFeedList = parseFeed(inputStream);
-
-                    for (TrimmedRSSObject temp : parseFeedList){
-                        if (jobCancelled) {
-                            Log.d(TAG, "run: jobCancelled == true");
-                            return;
-                        }
-                        upDateDB(temp);
+                for (String currentURL : getURLs) {
+                    if (jobCancelled) {
+                        Log.d(TAG, "run: jobCancelled == true");
+                        return;
                     }
 
-                } catch (IOException e) {
-                    Log.e(TAG, "Error", e);
-                } catch (XmlPullParserException e) {
-                    Log.e(TAG, "Error", e);
+                    if (currentURL == null) {
+                        continue;
+                    }
+                    if (currentURL.equals("") || currentURL.equals(" ")) {
+                        continue;
+                    }
+
+                    try {
+                        if(!currentURL.startsWith("http://") && !currentURL.startsWith("https://"))
+                            currentURL = "http://" + currentURL;
+
+                        URL url = new URL(currentURL);
+                        InputStream inputStream = url.openConnection().getInputStream();
+                        parseFeedList = parseFeed(inputStream);
+
+                        for (TrimmedRSSObject temp : parseFeedList){
+                            if (jobCancelled) {
+                                Log.d(TAG, "run: jobCancelled == true");
+                                return;
+                            }
+                            upDateDB(temp);
+                        }
+
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error", e);
+                    } catch (XmlPullParserException e) {
+                        Log.e(TAG, "Error", e);
+                    }
                 }
+
+
             }
         }).start();
 
     }
 
-    public List<TrimmedRSSObject> parseFeed(InputStream inputStream) throws XmlPullParserException,
+    public static List<TrimmedRSSObject> parseFeed(InputStream inputStream) throws XmlPullParserException,
             IOException {
         String title = null;
         String link = null;
@@ -156,7 +197,7 @@ public class Scheduler extends JobService {
                     description = result;
                 }
 
-                if (title != null && link != null && description != null) {
+                if (title != null && link != null && description != null && pubDate !=null) {
                     if(isItem) {
                         TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description);
                         Log.d(TAG, "parseFeed: pubDate: "+ pubDate + "title:" +title + " description: " + description);

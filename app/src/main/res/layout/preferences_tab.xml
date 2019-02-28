@@ -100,6 +100,40 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/black"/>
+
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri"
+                android:hint="Enter new RSS URL: "
+                android:id="@+id/new_url_source"
+                />
+
+
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/black"/>
+
+
+
+
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
 
             <Button
                 android:id="@+id/button_preferences_apply_changes"

@@ -8,6 +8,11 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="update_frequency_key">update_frequency</string>
     <string name="rss_list_length_key">length_key</string>
+    <string name="rss_source_key">source_key</string>
+    <string name="default_value_rss_list_length">"5"</string>
+    <string name="default_value_rss_source">"https://www.nrk.no/nyheter/siste.rss"</string>
+    <string name="rss_source_list_separator">","</string>
+    <string name="default_value_update_frequency">"15"</string>
 
     <string-array name="update_options">
         <item>15 min</item>

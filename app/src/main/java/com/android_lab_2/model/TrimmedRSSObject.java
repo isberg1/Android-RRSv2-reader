@@ -34,10 +34,10 @@ public class TrimmedRSSObject  {
 
 
     public TrimmedRSSObject(String title, String pubDate, String link, String description) {
-        this.title = title;
+        this.title = title.trim();
         this.pubDate = dateFormatConverter(pubDate);
-        this.link = link;
-        this.description = description;
+        this.link = link.trim();
+        this.description = description.trim();
         this.sortValue = getSortingValueFromDate(this.pubDate);
     }
 

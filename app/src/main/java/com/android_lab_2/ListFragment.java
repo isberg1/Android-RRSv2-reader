@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -66,14 +67,6 @@ public class ListFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
 
         textView = view.findViewById(R.id.list_item_List_Tab);
-       /* textView.setFocusable(false);
-        textView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                textView.setFocusableInTouchMode(true);
-                return false;
-            }
-        });*/
 
         db = new DBHelper(getContext(), DATABASE_NAME);
 
@@ -234,7 +227,7 @@ public class ListFragment extends Fragment {
     }
     public String readPreferences(int key) {
 
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String str = sharedPref.getString(getString(key),"");
 
         return str;

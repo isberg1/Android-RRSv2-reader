@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: ");
 
+        ensureValuesExits();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -51,6 +54,23 @@ public class MainActivity extends AppCompatActivity {
       //  stopRSService();
 
     }
+
+    private void ensureValuesExits() {
+        String listLength = readPreferences(R.string.rss_list_length_key);
+        String rrsSources = readPreferences(R.string.rss_source_key);
+        String serviceTime = readPreferences(R.string.update_frequency_key);
+
+        if (listLength.equals("") || listLength.equals(" ")) {
+            writePreferences(R.string.rss_list_length_key, getString(R.string.default_value_rss_list_length));
+        }
+        if (rrsSources.equals("") || rrsSources.equals(" ")) {
+            writePreferences(R.string.rss_source_key, getString(R.string.default_value_rss_source));
+        }
+        if (serviceTime.equals("") || serviceTime.equals(" ")) {
+            writePreferences(R.string.update_frequency_key, getString(R.string.default_value_update_frequency));
+        }
+    }
+
 
     public void startRSService() {
 
@@ -94,10 +114,24 @@ public class MainActivity extends AppCompatActivity {
 
     public  String readPreferences(int key) {
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String str = sharedPref.getString(getString(key),"");
 
         return str;
+    }
+
+    public  void writePreferences(int key, String  value) {
+        SharedPreferences sharedPref = null;
+        try {
+            sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "writePreferences: unable to getPreferences");
+            return;
+        }
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(key), (String)value);
+        editor.apply();
     }
 
     private void stopRSService() {
@@ -116,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new PreferencesFragment(), "Preferences");
         viewPager.setAdapter(adapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -18,7 +18,7 @@ public interface itemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insert(TrimmedRSSObject... objects);
 
-    @Update(onConflict = OnConflictStrategy.IGNORE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     public void update(TrimmedRSSObject... objects);
 
     @Delete
