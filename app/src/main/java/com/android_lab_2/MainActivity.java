@@ -37,18 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        // start fragment management
         sectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
-
         viewPager = findViewById(R.id.container);
         setUpViewPager(viewPager);
-
-
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        // set starting position to 1 right of default.
-        viewPager.setCurrentItem(viewPager.getCurrentItem() +1);
 
         startRSService();
       //  stopRSService();
@@ -149,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "setUpViewPager: ");
 
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SourceFragment(), "Source");
         adapter.addFragment(new ListFragment(), "List");
         adapter.addFragment(new PreferencesFragment(), "Preferences");
         viewPager.setAdapter(adapter);
