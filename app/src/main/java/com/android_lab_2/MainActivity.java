@@ -20,7 +20,6 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private SectionsPageAdapter sectionsPageAdapter;
 
     private ViewPager viewPager;
 
@@ -32,30 +31,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "onCreate: ");
-
+        // ensure default values for preferences exits
         ensureValuesExits();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // start fragment management
-        sectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
         viewPager = findViewById(R.id.container);
         setUpViewPager(viewPager);
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
+        // configure jobscheduler service
         startRSService();
       //  stopRSService();
 
     }
-
+    // ensure default values for preferences exits
     private void ensureValuesExits() {
+        // try to get values form defaultpreferences
         String listLength = readPreferences(R.string.rss_list_length_key);
         String rrsSources = readPreferences(R.string.rss_source_key);
         String serviceTime = readPreferences(R.string.update_frequency_key);
         String currentlySelectedURL = readPreferences(R.string.rss_source_currently_selected_url);
 
+        // if value does not exist, wright default values to defaultpreferences
         if (listLength.equals("") || listLength.equals(" ")) {
             writePreferences(R.string.rss_list_length_key, getString(R.string.default_value_rss_list_length));
         }
@@ -70,12 +70,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    // starts the rss update service
     public void startRSService() {
-
+        // configure jobscheduler service
         JobInfo info = makeService();
 
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        // start service
         int result = jobScheduler.schedule(info);
 
         // check if service is registered
@@ -87,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // configure jobscheduler service
     public JobInfo makeService() {
-
         int time = getUpdatefrequency();
         // set service requirements parameters
         ComponentName componentName = new ComponentName(this, Scheduler.class);
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         return info;
     }
 
-
+    // get the frequency at witch the service is to run
     public  int getUpdatefrequency() {
         String stringTime = readPreferences(R.string.update_frequency_key);
         Log.d(TAG, "getUpdatefrequency: stringTime: " + stringTime);
@@ -110,15 +111,15 @@ public class MainActivity extends AppCompatActivity {
         return newTime;
     }
 
-
+    // reads a DefaultSharedPreferences
     public  String readPreferences(int key) {
-
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String str = sharedPref.getString(getString(key),"");
 
         return str;
     }
 
+    // wrights a DefaultSharedPreferences
     public  void writePreferences(int key, String  value) {
         SharedPreferences sharedPref = null;
         try {
@@ -129,10 +130,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(key), (String)value);
+        editor.putString(getString(key), value);
         editor.apply();
     }
 
+    // stops the jobsheduler service from running, used for debugging
     private void stopRSService() {
         JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         jobScheduler.cancel(JOB_SERVICE_ID);
@@ -140,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // initialize the apps fragments
     private void setUpViewPager(ViewPager viewPager) {
         Log.d(TAG, "setUpViewPager: ");
 
@@ -149,30 +152,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
-            //startActivityForResult();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
 
 /*

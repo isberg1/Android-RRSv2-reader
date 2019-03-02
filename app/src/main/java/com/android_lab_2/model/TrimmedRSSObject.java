@@ -76,7 +76,7 @@ public class TrimmedRSSObject  {
 
         Log.d(TAG, "getSortingValueFromDate: " + sortNum);
 
-        Long num =new Long(0);
+        Long num =Long.valueOf(0);
         try {
             num = Long.parseLong(sortNum);
         } catch (NumberFormatException e) {
@@ -115,13 +115,6 @@ public class TrimmedRSSObject  {
     }
 
 
-    public TrimmedRSSObject(RSSObject rssObject) {
-        this.title =
-        this.pubDate = pubDate;
-        this.link = link;
-        this.description = description;
-
-    }
 
     public String getTitle() {
         return title;

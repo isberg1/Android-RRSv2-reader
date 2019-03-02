@@ -13,10 +13,8 @@ import android.widget.TextView;
 
 import com.android_lab_2.Interface.ItemClickListener;
 import com.android_lab_2.R;
-import com.android_lab_2.model.RSSObject;
 import com.android_lab_2.model.TrimmedRSSObject;
 
-import java.net.URI;
 import java.util.List;
 
 class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -65,12 +63,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private RSSObject RSSObject;
     private List<TrimmedRSSObject> trimmedRSSObject;
 
-    public FeedAdapter(Context context/*, RSSObject RSSObject*/,List<TrimmedRSSObject> trimmedRSSObject) {
+    public FeedAdapter(Context context,List<TrimmedRSSObject> trimmedRSSObject) {
         this.context = context;
-       // this.RSSObject = RSSObject;
         this.trimmedRSSObject = trimmedRSSObject;
         layoutInflater = LayoutInflater.from(context);
     }
