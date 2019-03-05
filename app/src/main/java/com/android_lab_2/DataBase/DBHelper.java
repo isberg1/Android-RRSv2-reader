@@ -8,6 +8,8 @@ import com.android_lab_2.model.TrimmedRSSObject;
 
 import java.util.List;
 
+// a wrapper class for the actual database object. provides public methods for
+// interacting with database
 public class DBHelper {
     private DataBase db;
     private String name;
@@ -33,7 +35,7 @@ public class DBHelper {
         this.name = name;
     }
 
-
+    // insets an rss object to the database
     public void insert(TrimmedRSSObject object) {
         db.daoAccess().insert(object);
     }
@@ -44,6 +46,7 @@ public class DBHelper {
         return trimmedRSSObjectById;
     }
 
+    // the main DB query, returns a list based on specified length(num) and URL(origin)
     public List<TrimmedRSSObject> getAllEntries(int num, String origin) {
         // todo get num from shared preferences
         //int num = 10;
@@ -51,7 +54,8 @@ public class DBHelper {
         return trimmedRSSObjects;
     }
 
-
+    // secondary DB query, returns a list of all rss objects in the database,
+    // list is used for finding regex pattern searches
     public List<TrimmedRSSObject> getAllTrimmedRSSObjectsWhereSourceIs(String source) {
         List<TrimmedRSSObject> trimmedRSSObjects = db.daoAccess().getAllTrimmedRSSObjectsWhereSourceIs();
         return trimmedRSSObjects;

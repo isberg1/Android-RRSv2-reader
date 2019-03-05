@@ -9,13 +9,12 @@ import android.util.Log;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+
+// the apps RSS object
+// also a table in the SQLite database
 @Entity(tableName = "trimmedRSSObject")
 public class TrimmedRSSObject  {
     private static final String TAG = "TrimmedRSSObject";
@@ -62,7 +61,7 @@ public class TrimmedRSSObject  {
     public String origin;
 
 
-
+// used to convert date to a number that the database can later sort entries based on
     private long getSortingValueFromDate(String date) {
         date = date.trim();
         String[] stage1 = date.split(" ");
@@ -75,7 +74,7 @@ public class TrimmedRSSObject  {
 
 
         Log.d(TAG, "getSortingValueFromDate: " + sortNum);
-
+        // set a default value
         Long num =Long.valueOf(0);
         try {
             num = Long.parseLong(sortNum);
@@ -86,14 +85,12 @@ public class TrimmedRSSObject  {
 
         return num;
     }
-
+    // convert the rss field "pubDate" to a simpler date format
     public String dateFormatConverter(String oldTime) {
 
         if (validateJavaDate(oldTime)) {
             return oldTime;
         }
-
-
 
         Log.d(TAG, "dateFormatConverter: oldTime: " + oldTime);
         // RSS time format
@@ -148,7 +145,7 @@ public class TrimmedRSSObject  {
         this.description = description;
     }
 
-
+// validates a date, not my one code:
 // source: https://beginnersbook.com/2013/05/java-date-format-validation/
     public static boolean validateJavaDate(String strDate)
     {
@@ -172,7 +169,7 @@ public class TrimmedRSSObject  {
             {
                 Date javaDate = sdfrmt.parse(strDate);
             }
-            /* Date format is invalid */
+            /* Date ffformat is invalid */
             catch (ParseException e)
             {
                 return false;
@@ -182,7 +179,7 @@ public class TrimmedRSSObject  {
         }
     }
 
-
+// used for debugging
     @Override
     public String toString() {
 

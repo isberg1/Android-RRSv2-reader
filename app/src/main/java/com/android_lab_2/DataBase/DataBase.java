@@ -7,6 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import com.android_lab_2.Interface.itemDao;
 import com.android_lab_2.model.TrimmedRSSObject;
 
+// the apps database object. uses a ROOM SQLite database
 @Database(entities = {TrimmedRSSObject.class}, version = 1)
 public abstract class DataBase extends RoomDatabase {
     public abstract itemDao daoAccess();

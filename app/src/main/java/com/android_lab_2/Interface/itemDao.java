@@ -11,6 +11,7 @@ import com.android_lab_2.model.TrimmedRSSObject;
 
 import java.util.List;
 
+// ROOM SQLite required interface, for SQL database interactions
 @Dao
 public interface itemDao {
 
@@ -23,15 +24,19 @@ public interface itemDao {
     @Delete
     void delete(TrimmedRSSObject objects);
 
+    // secondary DB query, returns a list of all rss objects in the database,
+    // list is used for finding regex pattern searches
     @Query("SELECT * FROM trimmedrssobject")
     List<TrimmedRSSObject> getAllTrimmedRSSObjectsWhereSourceIs();
 
+    // the main DB query, returns a list based on specified length(num) and URL(origin)
     @Query("SELECT * FROM trimmedrssobject WHERE origin = :url ORDER BY sortValue DESC Limit :num")
     List<TrimmedRSSObject> getTrimmedRSSObjects(int num, String url);
 
+    // used for debugging
     @Query(value = "SELECT * FROM trimmedrssobject WHERE link = :id")
     TrimmedRSSObject getTrimmedRSSObjectById(String id);
-
+    // used for debugging
     @Query("DELETE FROM trimmedrssobject")
     void dropTable();
 }

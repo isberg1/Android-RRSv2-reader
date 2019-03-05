@@ -25,11 +25,11 @@ public class Scheduler extends JobService {
     private String [] rssSourceList;
     private List<String> getURLs = new ArrayList<>();
 
-
+    // this method is run when the service stats
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "onStartJob: ");
-
+        // read settings form DefaultSharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String temp = sharedPreferences.getString(getString(R.string.rss_source_key), getString(R.string.default_value_rss_source));
         rssSourceList = temp.split(getString(R.string.rss_source_list_separator));
@@ -48,6 +48,7 @@ public class Scheduler extends JobService {
         return true;
     }
 
+    // this method is run when the service stops or is canceled
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(TAG, "onStopJob: ");
@@ -68,7 +69,7 @@ public class Scheduler extends JobService {
                     Log.d(TAG, "run: jobCancelled == true");
                     return;
                 }
-
+                // do som validation
                 if (currentURL == null) {
                     continue;
                 }
@@ -77,11 +78,13 @@ public class Scheduler extends JobService {
                 }
 
                 try {
+                    // do som validation
                     if(!currentURL.startsWith("http://") && !currentURL.startsWith("https://"))
                         currentURL = "http://" + currentURL;
 
                     URL url = new URL(currentURL);
                     InputStream inputStream = url.openConnection().getInputStream();
+                    // pars url stream
                     parseFeedList = parseFeed(inputStream, currentURL);
 
                     for (TrimmedRSSObject temp : parseFeedList){
@@ -89,6 +92,7 @@ public class Scheduler extends JobService {
                             Log.d(TAG, "run: jobCancelled == true");
                             return;
                         }
+                        // update database
                         upDateDB(temp);
                     }
 
@@ -98,7 +102,6 @@ public class Scheduler extends JobService {
                     Log.e(TAG, "Error", e);
                 }
             }
-
 
         }).start();
 
@@ -147,7 +150,7 @@ public class Scheduler extends JobService {
                     result = xmlPullParser.getText();
                     xmlPullParser.nextTag();
                 }
-
+                // XML input validation
                 if (name.equalsIgnoreCase("title")) {
                     title = result;
 
@@ -158,19 +161,15 @@ public class Scheduler extends JobService {
                 } else if (name.equalsIgnoreCase("description")) {
                     description = result;
                 }
-
+                // if everything is OK, add item to list
                 if (title != null && link != null && description != null && pubDate !=null) {
                     if(isItem) {
                         TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description, currentURL);
                         Log.d(TAG, "parseFeed: pubDate: "+ pubDate + "title:" +title + " description: " + description);
                         items.add(item);
                     }
-                    else {
-                       /* mFeedTitle = title;
-                        mFeedLink = link;
-                        mFeedDescription = description;*/
-                    }
 
+                    // reset values for next iteration
                     title = null;
                     link = null;
                     description = null;

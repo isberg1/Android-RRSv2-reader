@@ -112,26 +112,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     }
 
 
-   /*
-    @Override
-    public void onBindViewHolder(@NonNull FeedViewHolder feedViewHolder, int i) {
-
-        feedViewHolder.title.setText(RSSObject.getItems().get(i).getTitle());
-        feedViewHolder.date.setText(RSSObject.getItems().get(i).getPupDate());
-        feedViewHolder.content.setText(RSSObject.getItems().get(i).getContent());
-
-        feedViewHolder.setItemClickListener(new ItemClickListener() {
-
-            @Override
-            public void onClick(View view, int position, boolean isClick) {
-                if (isClick) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(RSSObject.getItems().get(position).getLink()));
-                    context.startActivity(intent);
-                }
-            }
-        });
-    }*/
-
     @Override
     public int getItemCount() {
        return trimmedRSSObject.size();
