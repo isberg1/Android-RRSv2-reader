@@ -48,14 +48,14 @@ public class PreferencesFragment extends Fragment {
     private TextView serviceTimeDisplay;
     private EditText selectListSize;
     private EditText newUrlSource = null;
-    ArrayAdapter<String> adapter;
-
+    private ArrayAdapter<String> adapter;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.preferences_tab,container,false);
+        view = inflater.inflate(R.layout.preferences_tab,container,false);
 
         setUpSpinnerRefreshRate(view);
 
@@ -74,14 +74,14 @@ public class PreferencesFragment extends Fragment {
         selectListSize = view.findViewById(R.id.select_list_size);
         newUrlSource = view.findViewById(R.id.new_url_source);
 
-        setUpSpinnerRssSource(view);
+        setUpSpinnerRssSource();
         
         return view;
     }
 
     // sets up the spinner for selecting rss source
     // the currently selected is always placed on top of the list
-    private void setUpSpinnerRssSource(View view) {
+    private void setUpSpinnerRssSource() {
         spinnerRssSource = view.findViewById(R.id.select_rss_source);
 
         // get comma separated list form defaultsharedpreferences
@@ -235,7 +235,8 @@ public class PreferencesFragment extends Fragment {
             protected Boolean doInBackground(URL... urls) {
                 try {
                     InputStream inputStream = url.openConnection().getInputStream();
-                    Scheduler.parseFeed(inputStream, url.toString());
+                    Scheduler scheduler = new Scheduler();
+                    scheduler.parseFeed(inputStream, url.toString());
 
                 } catch (IOException e) {
                     Log.d(TAG, ": new entry failed: IOException: value: " + url.toString());
@@ -264,6 +265,7 @@ public class PreferencesFragment extends Fragment {
                      writeNewUrlToPreferences(url.toString());
                      startRSService();
                      newUrlSource.getText().clear();
+                     setUpSpinnerRssSource();
                      return;
                  }
                  // respond to rejected url with toast

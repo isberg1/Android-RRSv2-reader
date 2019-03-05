@@ -63,6 +63,8 @@ public class TrimmedRSSObject  {
 
 // used to convert date to a number that the database can later sort entries based on
     private long getSortingValueFromDate(String date) {
+
+
         date = date.trim();
         String[] stage1 = date.split(" ");
         String[] stage2 = stage1[0].split("-");
@@ -112,6 +114,41 @@ public class TrimmedRSSObject  {
     }
 
 
+    // validates a date, not my one code:
+// source: https://beginnersbook.com/2013/05/java-date-format-validation/
+    public boolean validateJavaDate(String strDate) {
+        /* Check if date is 'null' */
+        if (strDate.trim().equals(""))
+        {
+            return true;
+        }
+        /* Date is not 'null' */
+        else
+        {
+            /*
+             * Set preferred date format,
+             * For example MM-dd-yyyy, MM.dd.yyyy,dd.MM.yyyy etc.*/
+            String format = "yyyy-MM-dd HH:mm:ss";  // cant access it from strings.xml
+            SimpleDateFormat sdfrmt = new SimpleDateFormat(format);
+            sdfrmt.setLenient(false);
+            /* Create Date object
+             * parse the string into date
+             */
+            try
+            {
+                Date javaDate = sdfrmt.parse(strDate);
+            }
+            /* Date ffformat is invalid */
+            catch (ParseException e)
+            {
+                return false;
+            }
+            /* Return true if date format is valid */
+            return true;
+        }
+    }
+
+
 
     public String getTitle() {
         return title;
@@ -143,40 +180,6 @@ public class TrimmedRSSObject  {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-// validates a date, not my one code:
-// source: https://beginnersbook.com/2013/05/java-date-format-validation/
-    public static boolean validateJavaDate(String strDate)
-    {
-        /* Check if date is 'null' */
-        if (strDate.trim().equals(""))
-        {
-            return true;
-        }
-        /* Date is not 'null' */
-        else
-        {
-            /*
-             * Set preferred date format,
-             * For example MM-dd-yyyy, MM.dd.yyyy,dd.MM.yyyy etc.*/
-            SimpleDateFormat sdfrmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdfrmt.setLenient(false);
-            /* Create Date object
-             * parse the string into date
-             */
-            try
-            {
-                Date javaDate = sdfrmt.parse(strDate);
-            }
-            /* Date ffformat is invalid */
-            catch (ParseException e)
-            {
-                return false;
-            }
-            /* Return true if date format is valid */
-            return true;
-        }
     }
 
 // used for debugging

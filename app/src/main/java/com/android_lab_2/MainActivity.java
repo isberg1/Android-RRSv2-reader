@@ -20,7 +20,6 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-
     private ViewPager viewPager;
 
     public static final int  JOB_SERVICE_ID = 111;

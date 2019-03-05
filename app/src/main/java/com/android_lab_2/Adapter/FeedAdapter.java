@@ -22,6 +22,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
     public TextView title;
     public TextView date;
     public TextView content;
+    public TextView link;
 
     private ItemClickListener itemClickListener;
 
@@ -31,6 +32,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         title = itemView.findViewById(R.id.text_card_title);
         date = itemView.findViewById(R.id.text_card_date);
         content = itemView.findViewById(R.id.text_card_content);
+        link = itemView.findViewById(R.id.text_card_link);
 
         itemView.setOnClickListener(this);
         itemView.setOnLongClickListener(this);
@@ -86,6 +88,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
         feedViewHolder.title.setText(trimmedRSSObject.get(i).getTitle());
         feedViewHolder.date.setText(trimmedRSSObject.get(i).getPubDate());
         feedViewHolder.content.setText(trimmedRSSObject.get(i).getDescription());
+        feedViewHolder.link.setText(trimmedRSSObject.get(i).getLink());
 
         feedViewHolder.setItemClickListener(new ItemClickListener() {
 

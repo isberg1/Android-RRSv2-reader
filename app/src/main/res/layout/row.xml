@@ -32,6 +32,14 @@
             android:layout_height="wrap_content" />
 
         <TextView
+            android:text="Link"
+            android:id="@+id/text_card_link"
+            android:textStyle="italic"
+            android:textSize="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
             android:text="Content"
             android:id="@+id/text_card_content"
             android:textStyle="normal"

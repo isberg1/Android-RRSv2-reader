@@ -108,7 +108,7 @@ public class Scheduler extends JobService {
     }
 
     // parses a url stream, and tries to get rss objects from itt
-    public static List<TrimmedRSSObject> parseFeed(InputStream inputStream, String currentURL) throws XmlPullParserException,
+    public List<TrimmedRSSObject> parseFeed(InputStream inputStream, String currentURL) throws XmlPullParserException,
             IOException {
         String title = null;
         String link = null;
@@ -124,6 +124,7 @@ public class Scheduler extends JobService {
 
             xmlPullParser.nextTag();
             while (xmlPullParser.next() != XmlPullParser.END_DOCUMENT) {
+
                 int eventType = xmlPullParser.getEventType();
 
                 String name = xmlPullParser.getName();
@@ -153,20 +154,23 @@ public class Scheduler extends JobService {
                 // XML input validation
                 if (name.equalsIgnoreCase("title")) {
                     title = result;
-
-                } else if (name.equalsIgnoreCase("link")) {
-                    link = result;
-                } else if (name.equalsIgnoreCase("pubDate")) {
-                    pubDate = result;
                 } else if (name.equalsIgnoreCase("description")) {
                     description = result;
+                } else if (name.equalsIgnoreCase("pubDate")) {
+                    pubDate = result;
+                } else if (name.equalsIgnoreCase("link")) {
+                    if (title != null || description != null) {
+                        link = result;
+                    }
+
                 }
                 // if everything is OK, add item to list
                 if (title != null && link != null && description != null && pubDate !=null) {
                     if(isItem) {
                         TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description, currentURL);
-                        Log.d(TAG, "parseFeed: pubDate: "+ pubDate + "title:" +title + " description: " + description);
+                        Log.d(TAG, "parseFeed: pubDate: "+ pubDate + " link: " + link +" title:" +title + " description: " + description);
                         items.add(item);
+
                     }
 
                     // reset values for next iteration
@@ -176,6 +180,7 @@ public class Scheduler extends JobService {
                     pubDate = null;
                     isItem = false;
                 }
+
             }
 
             return items;
