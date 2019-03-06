@@ -108,7 +108,7 @@ public class ListFragment extends Fragment {
             temp.clear();
 
              for (TrimmedRSSObject object : allEntries) {
-                 if (searchMatch(object, searchTerm)) {
+                 if (UtilityClass.searchMatch(object, searchTerm)) {
                      temp.add(object);
                      Log.d(TAG, "filter: run: object: " + object.toString());
                  }
@@ -142,24 +142,6 @@ public class ListFragment extends Fragment {
         thread.start();
     }
 
-    // tries to match a regex pattern with a searchTerm, and return the boolean of the result
-    private boolean searchMatch(TrimmedRSSObject object, String searchTerm) {
-
-        Log.d(TAG, "searchMatch: object: " + object.toString() + " searchTerm" + searchTerm);
-        Log.d(TAG, "searchMatch: bool: " + Pattern.matches(searchTerm, object.toString()));
-
-        Pattern p = Pattern.compile(searchTerm);
-        // if title matches
-        if (p.matcher(object.getTitle()).matches()){
-            return true;
-        }
-        // if pubDate matches
-        if (p.matcher(object.getPubDate()).matches()){
-            return true;
-        }
-        // if description matches
-        return p.matcher(object.getDescription()).matches();
-    }
 
     // updates the recyclerView
     public void setUpRecyclerView() {

@@ -41,42 +41,5 @@ public class ExampleUnitTest {
 
 
 
-    @Test
-    public void TrimmedRSSObject_correctDate() {
 
-        TrimmedRSSObject trimmedRSSObject =
-                new TrimmedRSSObject("","Tue, 05 Mar 2019 17:52:51 +0100","","","");
-
-        assertEquals("2019-03-05 17:52:51",trimmedRSSObject.getPubDate());
-    }
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-   /*
-   @Test
-    public void parsing_test() throws IOException, XmlPullParserException {
-
-       Scheduler scheduler = new Scheduler();
-
-       String valideURL = "https://www.vg.no/rss/feed/forsiden";
-
-
-
-       List<TrimmedRSSObject> trimmedRSSObjectList;
-
-       try {
-           thrown.expect(NullPointerException.class);
-           URL url = new URL(valideURL);
-           InputStream inputStream = url.openConnection().getInputStream();
-
-           trimmedRSSObjectList = scheduler.parseFeed(inputStream, valideURL);
-
-
-       } catch (Exception e) {
-           e.printStackTrace();
-       }
-
-
-   }
-*/
 }

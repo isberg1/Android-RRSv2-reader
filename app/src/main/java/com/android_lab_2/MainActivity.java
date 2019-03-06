@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         startRSService();
       //  stopRSService();
 
+
     }
     // ensure default values for preferences exits
     private void ensureValuesExits() {

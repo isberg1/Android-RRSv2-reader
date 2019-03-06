@@ -1,7 +1,11 @@
 package com.android_lab_2;
 
+import android.app.job.JobInfo;
 import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
 import android.app.job.JobService;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -195,4 +199,6 @@ public class Scheduler extends JobService {
         db.insert(rss);
         Log.d(TAG, "doInBackground: from updateDB in Scheduler.java");
     }
+
+
 }
