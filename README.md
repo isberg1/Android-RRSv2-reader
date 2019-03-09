@@ -65,7 +65,7 @@ easily accessible to all activities, fragments and classes.
 for the database implementation i used the ROOM feature of SQLite. the app only uses one table
 that look like this:
 
-        link (primary key), title, pubDate, description, origin
+        link (primary key), title, pubDate, description, origin, sortValue, imageUrl
 
 #### about the background service
 the background service is implemented as a android jobservice, using jobScheduler.
@@ -86,13 +86,13 @@ way to do XML paring in android.
 
 * [ ] The git repository URL is correctly provided, such that command works: `git clone <url> `
 * [ ] The code is well, logically organised and structured into appropriate classes. Everything should be in a single package.
-* [ ] It is clear to the user what RSS feed formats are supported (RSS2.0 and/or Atom)
+* [x] It is clear to the user what RSS feed formats are supported (RSS2.0 and/or Atom)
 * [x] The user can go to Preferences and set the URL of the RSS feed.
 * [x] The user can go to Preferences and set the feed item limit.
 * [x] The user can go to Preferences and set the feed refresh frequency.
 * [x] The user can see the list of items from the feed on the home Activity ListView.
 * [x] The user can go to a particular item by clicking on it. The content will be displayed in newly open activity. The back button puts the user back onto the main ListView activity to select another item.
 * [x] The user can press the back button from the main activity to quit the app.
-* [ ] When the content article has graphics, it is rendered correctly.
+* [x] When the content article has graphics, it is rendered correctly.
 * [x] The Filter EditText works as expected.
-* [ ] The app has JUnit Tests for testing the parsing, and the filtering functionality.
+* [x] The app has JUnit Tests for testing the parsing, and the filtering functionality.

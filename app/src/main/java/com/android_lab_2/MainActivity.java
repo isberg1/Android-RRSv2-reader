@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: ");
         // ensure default values for preferences exits
         ensureValuesExits();
-
+        // used to get and display images in recyclerView, external library: https://github.com/nostra13/Android-Universal-Image-Loader
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 

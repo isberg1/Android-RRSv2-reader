@@ -7,7 +7,7 @@
     <string name="rss_source_key">source_key</string>
     <string name="rss_source_currently_selected_url">currently_selected_url</string>
     <string name="default_value_rss_list_length">"5"</string>
-    <string name="default_value_rss_source">"https://www.nrk.no/nyheter/siste.rss"</string>
+    <string name="default_value_rss_source">"https://www.nrk.no/toppsaker.rss"</string>
     <string name="rss_source_list_separator">","</string>
     <string name="default_value_update_frequency">"15"</string>
     <string name="preferred_date_format">"yyyy-MM-dd HH:mm:ss"</string>

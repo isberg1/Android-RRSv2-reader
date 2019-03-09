@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -92,7 +93,7 @@
                     android:paddingTop="15dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text=" Maximum entries in RSS list:  "
+                    android:text="Maximum entries in RSS list:  "
                     android:layout_gravity="start"
                     android:inputType="textPersonName"
                     android:maxLines="1"
@@ -109,11 +110,7 @@
                     android:textAlignment="center"
                     />
 
-
-
             </TableRow>
-
-
 
             <Space
                 android:layout_width="match_parent"
@@ -131,6 +128,7 @@
                 android:inputType="textUri"
                 android:hint="Enter new RSSv2 URL: "
                 android:id="@+id/new_url_source"
+                android:textSize="20dp"
                 />
 
             <Space
@@ -152,9 +150,8 @@
                 android:text="Apply changes"
                 android:textSize="20sp"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_gravity="bottom" />
-
-
+                android:layout_gravity="bottom"
+                />
 
         </LinearLayout>
 

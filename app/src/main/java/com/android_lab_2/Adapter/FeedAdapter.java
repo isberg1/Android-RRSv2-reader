@@ -29,7 +29,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
     public TextView date;
     public TextView content;
     // for debugging
-    public TextView link;
+    //public TextView link;
     public ImageView image;
 
     private ItemClickListener itemClickListener;
@@ -41,7 +41,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         date = itemView.findViewById(R.id.text_card_date);
         content = itemView.findViewById(R.id.text_card_content);
         // for debugging
-        link = itemView.findViewById(R.id.text_card_link);
+        //link = itemView.findViewById(R.id.text_card_link);
         image = itemView.findViewById(R.id.text_card_image);
 
         itemView.setOnClickListener(this);
@@ -100,7 +100,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
         feedViewHolder.date.setText(trimmedRSSObject.get(i).getPubDate());
         feedViewHolder.content.setText(trimmedRSSObject.get(i).getDescription());
        // for debugging
-        feedViewHolder.link.setText(trimmedRSSObject.get(i).getLink());
+        //feedViewHolder.link.setText(trimmedRSSObject.get(i).getLink());
 
         String uri = "https://gfx.nrk.no/MNSXJtYbTWLX9jZFjJZGOwwgfUF5qvgO5-H9OuyNhzuw";
         imageLoader.displayImage(trimmedRSSObject.get(i).getImageUrl(),feedViewHolder.image);

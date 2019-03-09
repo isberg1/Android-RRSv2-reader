@@ -2,30 +2,35 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:background="@color/colorDark">
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="5dp">
 
 
 
         <EditText
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/list_item_List_Tab"
-            android:hint="Enter Regex Pattern"
+            android:hint=" Enter Regex Pattern"
             android:layout_gravity="start"
             android:layout_weight="1"
             android:inputType="textPersonName"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:background="@color/colorWhite"
+            />
 
         <Button
             android:id="@+id/button_refresh"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:text="Search" />
+            android:text="Search"
+            android:textSize="15dp"
+    />
 
     </TableRow>
 
