@@ -118,6 +118,7 @@ public class Scheduler extends JobService {
         String link = null;
         String description = null;
         String pubDate = null;
+        String imageUrl = null;
         boolean isItem = false;
         List<TrimmedRSSObject> items = new ArrayList<>();
 
@@ -149,8 +150,19 @@ public class Scheduler extends JobService {
                     }
                 }
 
+                if (!isItem) {
+                    continue;
+                }
+
                 Log.d("MyXmlParser", "Parsing name ==> " + name);
                 String result = "";
+
+                if (name.equalsIgnoreCase("enclosure")) {
+                   imageUrl = xmlPullParser.getAttributeValue(null,"url");
+                   Log.d(TAG, "parseFeed: imageUrl:" + imageUrl);
+                }
+
+
                 if (xmlPullParser.next() == XmlPullParser.TEXT) {
                     result = xmlPullParser.getText();
                     xmlPullParser.nextTag();
@@ -166,12 +178,13 @@ public class Scheduler extends JobService {
                     if (title != null || description != null) {
                         link = result;
                     }
-
                 }
-                // if everything is OK, add item to list
+
+
+                // if everything is OK, add item to list, it is OK for imageUrl to be null
                 if (title != null && link != null && description != null && pubDate !=null) {
                     if(isItem) {
-                        TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description, currentURL);
+                        TrimmedRSSObject item = new TrimmedRSSObject(title, pubDate, link, description, currentURL,imageUrl);
                         Log.d(TAG, "parseFeed: pubDate: "+ pubDate + " link: " + link +" title:" +title + " description: " + description);
                         items.add(item);
 
@@ -182,6 +195,7 @@ public class Scheduler extends JobService {
                     link = null;
                     description = null;
                     pubDate = null;
+                    imageUrl = null;
                     isItem = false;
                 }
 

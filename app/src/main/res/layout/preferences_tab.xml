@@ -14,16 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-           android:padding="15dp">
+            android:padding="15dp">
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
 
-            <View
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@android:color/black"/>
+                android:layout_height="wrap_content"
+                android:text="Current RSSv2 source"
+                android:textSize="20dp"/>
 
             <Spinner
                 android:layout_width="match_parent"
@@ -131,12 +129,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textUri"
-                android:hint="Enter new RSS URL: "
+                android:hint="Enter new RSSv2 URL: "
                 android:id="@+id/new_url_source"
                 />
-
-
-
 
             <Space
                 android:layout_width="match_parent"
@@ -145,11 +140,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:background="@android:color/black"/>
-
-
-
-
-
 
             <Space
                 android:layout_width="match_parent"

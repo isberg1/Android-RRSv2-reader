@@ -2,9 +2,14 @@ package com.android_lab_2.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,16 +35,27 @@ public class TrimmedRSSObject  {
     public  String  description;
     @ColumnInfo(name = "sortValue")
     public long sortValue;
+    @ColumnInfo(name = "imageUrl")
+    public String imageUrl;
 
-
-    public TrimmedRSSObject(String title, String pubDate, String link, String description, String origin) {
+    public TrimmedRSSObject(String title, String pubDate, String link, String description, String origin, String imageUrl) {
         this.title = title.trim();
         this.pubDate = dateFormatConverter(pubDate);
         this.link = link.trim();
         this.description = description.trim();
         this.sortValue = getSortingValueFromDate(this.pubDate);
         this.origin = origin;
+        this.imageUrl = imageUrl;
     }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 
     public long getSortValue() {
         return sortValue;
@@ -181,6 +197,8 @@ public class TrimmedRSSObject  {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
 
 // used for debugging
     @Override

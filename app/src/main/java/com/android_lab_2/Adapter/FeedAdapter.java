@@ -3,18 +3,24 @@ package com.android_lab_2.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android_lab_2.Interface.ItemClickListener;
 import com.android_lab_2.R;
 import com.android_lab_2.model.TrimmedRSSObject;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -22,7 +28,9 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
     public TextView title;
     public TextView date;
     public TextView content;
+    // for debugging
     public TextView link;
+    public ImageView image;
 
     private ItemClickListener itemClickListener;
 
@@ -32,7 +40,9 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         title = itemView.findViewById(R.id.text_card_title);
         date = itemView.findViewById(R.id.text_card_date);
         content = itemView.findViewById(R.id.text_card_content);
+        // for debugging
         link = itemView.findViewById(R.id.text_card_link);
+        image = itemView.findViewById(R.id.text_card_image);
 
         itemView.setOnClickListener(this);
         itemView.setOnLongClickListener(this);
@@ -62,10 +72,11 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
 
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
-
+    private static final String TAG = "FeedAdapter";
     private Context context;
     private LayoutInflater layoutInflater;
     private List<TrimmedRSSObject> trimmedRSSObject;
+    private ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
 
     public FeedAdapter(Context context,List<TrimmedRSSObject> trimmedRSSObject) {
         this.context = context;
@@ -88,7 +99,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
         feedViewHolder.title.setText(trimmedRSSObject.get(i).getTitle());
         feedViewHolder.date.setText(trimmedRSSObject.get(i).getPubDate());
         feedViewHolder.content.setText(trimmedRSSObject.get(i).getDescription());
+       // for debugging
         feedViewHolder.link.setText(trimmedRSSObject.get(i).getLink());
+
+        String uri = "https://gfx.nrk.no/MNSXJtYbTWLX9jZFjJZGOwwgfUF5qvgO5-H9OuyNhzuw";
+        imageLoader.displayImage(trimmedRSSObject.get(i).getImageUrl(),feedViewHolder.image);
+
 
         feedViewHolder.setItemClickListener(new ItemClickListener() {
 
@@ -113,6 +129,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             }
         });
     }
+
+
 
 
     @Override
