@@ -11,9 +11,9 @@ https://www.vg.no/rss/feed/forsiden/                # has images
 https://www.cisco.com/c/dam/global/no_no/about/rss.xml
 http://teknobygg.no/rss/articles/3108
 
-the app consists of one Activity that uses 2 fragments, List and preferences.
-A SQLite database to store rss articles. One background service that downloads rss
-articles and stores them in a database.
+the app consists of 2 Activities. MainActivity that uses 2 fragments, List and preferences.
+and a WebActivity for displaying websites. A SQLite database to store rss articles.
+One background service that downloads rss articles and stores them in a database.
 
 ### List fragment
 in the list fragment you may read the tittle, publication date and descriptions of rss articles.
@@ -38,6 +38,8 @@ list fragment.
 
 invalid entries are rejected, and will result in a snackBar displaying an error message.
 
+### WebActivity
+a simple WebView that uses a url it gets as a parameter to open a website.
 
 ## Technical implementation
 
@@ -49,7 +51,8 @@ the list fragment is made using a recyclerView with a card layout. In order to p
 required regex search. the app extract entries from the database and does a regex match in java.
 I originally wanted to perform the regex search in the database directly. but found that
 SQLite does not support such functionality. it has a function for searching for a word pattern
-by using "LIKE %pattern%", but this would not be a fully functional regex search.
+by using "LIKE %pattern%", but this would not be a fully functional regex search. clicking on a card
+, long or short, will open WebActivity.
 
 
 #### about preferences
@@ -84,14 +87,16 @@ way to do XML paring in android.
 
 # Checklist
 
-* [ ] The git repository URL is correctly provided, such that command works: `git clone <url> `
+* [x] The git repository URL is correctly provided, such that command works: `git clone <url> `
 * [x] The code is well, logically organised and structured into appropriate classes. Everything should be in a single package.
 * [x] It is clear to the user what RSS feed formats are supported (RSS2.0 and/or Atom)
 * [x] The user can go to Preferences and set the URL of the RSS feed.
 * [x] The user can go to Preferences and set the feed item limit.
 * [x] The user can go to Preferences and set the feed refresh frequency.
 * [x] The user can see the list of items from the feed on the home Activity ListView.
-* [x] The user can go to a particular item by clicking on it. The content will be displayed in newly open activity. The back button puts the user back onto the main ListView activity to select another item.
+* [x] The user can go to a particular item by clicking on it.
+The content will be displayed in newly open activity.
+The back button puts the user back onto the main ListView activity to select another item.
 * [x] The user can press the back button from the main activity to quit the app.
 * [x] When the content article has graphics, it is rendered correctly.
 * [x] The Filter EditText works as expected.
