@@ -50,15 +50,15 @@ public class PreferencesFragment extends Fragment {
     private EditText newUrlSource = null;
     private ArrayAdapter<String> adapter;
     private View view;
+    private UtilityClass util;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.preferences_tab,container,false);
-
+        util = new UtilityClass( getActivity().getApplicationContext());
         setUpSpinnerRefreshRate(view);
-
 
         Button applyChanges = view.findViewById(R.id.button_preferences_apply_changes);
         applyChanges.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,6 @@ public class PreferencesFragment extends Fragment {
                 applyNewPreferences();
             }
         });
-
 
         serviceTimeDisplay = view.findViewById(R.id.text_preferences_currently_selected);
         updateServiceTimeDisplay();
@@ -85,9 +84,9 @@ public class PreferencesFragment extends Fragment {
         spinnerRssSource = view.findViewById(R.id.select_rss_source);
 
         // get comma separated list form defaultsharedpreferences
-        String urlCSL = readPreferences(R.string.rss_source_key);
+        String urlCSL = util.readPreferences(R.string.rss_source_key);
         // get currently selected rss source form defaultsharedpreferences
-        String currentlySelectedURL = readPreferences(R.string.rss_source_currently_selected_url);
+        String currentlySelectedURL = util.readPreferences(R.string.rss_source_currently_selected_url);
         Log.d(TAG, "setUpSpinnerRssSource: urlCSL: " + urlCSL);
 
         // ensure the currently selected is always placed on top of the list
@@ -105,7 +104,6 @@ public class PreferencesFragment extends Fragment {
         }
 
         setupAdapterRssSource(view, newUrlList);
-
     }
 
     // sets up the adapter for the spinner for selecting rss source
@@ -146,8 +144,6 @@ public class PreferencesFragment extends Fragment {
         entries.addAll(Arrays.asList(temp));
 
         setUpAdapterRefreshRate( view, entries );
-
-
     }
 
     // sets up the adapter for the spinner for selecting rss service refresh rate
@@ -179,7 +175,7 @@ public class PreferencesFragment extends Fragment {
     // displays current service refresh rate
     private void updateServiceTimeDisplay() {
         String message = "Currently running every:  ";
-        message += readPreferences(R.string.update_frequency_key);
+        message += util.readPreferences(R.string.update_frequency_key);
         serviceTimeDisplay.setText(message);
     }
 
@@ -197,7 +193,7 @@ public class PreferencesFragment extends Fragment {
     private void setNewCurrentlySelectedURL() {
         if (selectedCurrentUrlSpinnerItem !=null) {
             if (!selectedCurrentUrlSpinnerItem.equals("") && !selectedCurrentUrlSpinnerItem.equals(" ")) {
-                writePreferences(R.string.rss_source_currently_selected_url, selectedCurrentUrlSpinnerItem);
+                util.writePreferences(R.string.rss_source_currently_selected_url, selectedCurrentUrlSpinnerItem);
             }
         }
 
@@ -227,7 +223,7 @@ public class PreferencesFragment extends Fragment {
         }
     }
 
-    // tries to validate URL as a RSS feed, stores is and restarts service
+    // tries to validate URL as a RSS feed, stores it and restarts service
     private  void validateAndUpdateNewUrl(URL url) {
 
          @SuppressLint("StaticFieldLeak") AsyncTask<URL,Void, Boolean> validateNewUrlAsync = new AsyncTask<URL, Void, Boolean>() {
@@ -263,7 +259,8 @@ public class PreferencesFragment extends Fragment {
                  // if URL paring was successful
                  if ( aBoolean ) {
                      writeNewUrlToPreferences(url.toString());
-                     startRSService();
+                     util.startRSService();
+                    // startRSService();
                      newUrlSource.getText().clear();
                      setUpSpinnerRssSource();
                      return;
@@ -284,7 +281,7 @@ public class PreferencesFragment extends Fragment {
         String separator =getString(R.string.rss_source_list_separator);
         StringBuilder toPreferences= new StringBuilder();
 
-        String allCurrentUrls = readPreferences(R.string.rss_source_key);
+        String allCurrentUrls = util.readPreferences(R.string.rss_source_key);
 
         // ensure idempotent( if already in list, do nothing)
         if (allCurrentUrls.contains(newUrl)) {
@@ -295,16 +292,17 @@ public class PreferencesFragment extends Fragment {
         toPreferences.append(allCurrentUrls);
         toPreferences.append(separator);
         toPreferences.append(newUrl);
-        writePreferences(R.string.rss_source_key, toPreferences.toString());
+        util.writePreferences(R.string.rss_source_key, toPreferences.toString());
     }
 
     // validates and updates the rss update service
     private void setNewRefreshRate() {
         if (selectedRefreshRateSpinnerItem != null ) {
             if ( !selectedRefreshRateSpinnerItem.equals("") && !selectedRefreshRateSpinnerItem.equals(" ")) {
-                writePreferences(R.string.update_frequency_key, selectedRefreshRateSpinnerItem);
+                util.writePreferences(R.string.update_frequency_key, selectedRefreshRateSpinnerItem);
                 updateServiceTimeDisplay();
-                startRSService();
+                util.startRSService();
+                //startRSService();
                 selectedRefreshRateSpinnerItem = null;
                 spinnerRefreshRate.setSelection(0);
             }
@@ -333,13 +331,13 @@ public class PreferencesFragment extends Fragment {
             return;
         }
 
-        writePreferences(R.string.rss_list_length_key, numEntries.toString());
+        util.writePreferences(R.string.rss_list_length_key, numEntries.toString());
         Log.d(TAG, "setNewNumberOfEntries: wrote new num entries");
         selectListSize.getText().clear();
     }
 
     // writes a value to defaultsharedpreference
-    public  void writePreferences(int key, String  value) {
+   /* public  void writePreferences(int key, String  value) {
         SharedPreferences sharedPref = null;
         try {
             sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -351,16 +349,16 @@ public class PreferencesFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(key), value);
         editor.apply();
-    }
+    }*/
 
     // reads a value from defaultsharedpreference
-    public String readPreferences(int key) {
+ /*   public String readPreferences(int key) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String str = preferences.getString(getString(key),"");
 
         return str;
     }
-
+*/
     // starts the rss update service
     public void startRSService() {
         // configure jobscheduler service
@@ -396,7 +394,7 @@ public class PreferencesFragment extends Fragment {
 
     // get the frequency at witch the service is to run
     public  int getUpdatefrequency() {
-        String stringTime = readPreferences(R.string.update_frequency_key);
+        String stringTime = util.readPreferences(R.string.update_frequency_key);
         Log.d(TAG, "getUpdatefrequency: stringTime: " + stringTime);
         int newTime = convertTimeStringToInt(stringTime);
 
@@ -445,7 +443,4 @@ public class PreferencesFragment extends Fragment {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
-
-
 }

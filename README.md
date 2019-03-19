@@ -85,7 +85,7 @@ way to do XML paring in android.
 # Checklist
 
 * [ ] The git repository URL is correctly provided, such that command works: `git clone <url> `
-* [ ] The code is well, logically organised and structured into appropriate classes. Everything should be in a single package.
+* [x] The code is well, logically organised and structured into appropriate classes. Everything should be in a single package.
 * [x] It is clear to the user what RSS feed formats are supported (RSS2.0 and/or Atom)
 * [x] The user can go to Preferences and set the URL of the RSS feed.
 * [x] The user can go to Preferences and set the feed item limit.

@@ -1,22 +1,14 @@
 package com.android_lab_2;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.android_lab_2.model.TrimmedRSSObject;
-
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,11 +24,19 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     private static final String TAG = "ExampleInstrumentedTest";
+    Context appContext;
+    Context instrumentationCtx;
+
+    @Before
+    public void setup() {
+        appContext = InstrumentationRegistry.getContext();
+        instrumentationCtx = InstrumentationRegistry.getTargetContext();
+    }
+
+
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
         assertEquals("com.android_lab_2", appContext.getPackageName());
     }
 
@@ -101,7 +101,7 @@ public class ExampleInstrumentedTest {
     public void TrimmedRSSObject_correctDate() {
 
         TrimmedRSSObject trimmedRSSObject =
-                new TrimmedRSSObject("","Tue, 05 Mar 2019 17:52:51 +0100","","","");
+                new TrimmedRSSObject("","Tue, 05 Mar 2019 17:52:51 +0100","","","", "");
 
         assertEquals("2019-03-05 17:52:51",trimmedRSSObject.getPubDate());
     }
@@ -115,7 +115,7 @@ public class ExampleInstrumentedTest {
 
         try {
             trimmedRSSObject =
-                    new TrimmedRSSObject("","Tue,  17:52:51 +0100","","","");
+                    new TrimmedRSSObject("","Tue,  17:52:51 +0100","","","", "");
             // if this statement is reached, something is wrong
             fail("invalid date");
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class ExampleInstrumentedTest {
         boolean result;
 
         TrimmedRSSObject trimmedRSSObject =
-               new TrimmedRSSObject("123",validDate,"", "some numbers and some text","");
+               new TrimmedRSSObject("123",validDate,"", "some numbers and some text","", "");
 
         // run UtilityClass.searchMatch with a variety of regex expressions
 
@@ -159,10 +159,54 @@ public class ExampleInstrumentedTest {
 
         result = UtilityClass.searchMatch(trimmedRSSObject, ".*2019.*");
         assertTrue(result);
-
-
     }
 
+    @Test
+    public void stringToIntTimeConverter() {
+
+
+        int defaultTime = instrumentationCtx.getResources().getInteger(R.integer.default_time_service);
+
+        UtilityClass util = new UtilityClass(instrumentationCtx);
+
+        int result = util.convertTimeStringToInt("lkdfjlksdjflksjdf");
+        assertEquals(defaultTime,result);
+
+        result = util.convertTimeStringToInt("30");
+        Log.d(TAG, "stringToIntTimeConverter: result" + result);
+        assertEquals(defaultTime,result);
+
+        int expected = 30;
+        result = util.convertTimeStringToInt("30 min");
+        Log.d(TAG, "stringToIntTimeConverter: result" + result);
+        assertEquals(expected,result);
+
+        expected = 1 *60;
+        result = util.convertTimeStringToInt("1 hour");
+        Log.d(TAG, "stringToIntTimeConverter: result " + result);
+        assertEquals(expected,result);
+
+
+        expected = 1 *60 *2;
+        result = util.convertTimeStringToInt("2 hour");
+        Log.d(TAG, "stringToIntTimeConverter: result " + result);
+        assertEquals(expected,result);
+
+        expected = defaultTime;
+        result = util.convertTimeStringToInt("2 ccc dlld");
+        Log.d(TAG, "stringToIntTimeConverter: result " + result);
+        assertEquals(expected,result);
+
+        expected = defaultTime;
+        result = util.convertTimeStringToInt("ccc dlld");
+        Log.d(TAG, "stringToIntTimeConverter: result " + result);
+        assertEquals(expected,result);
+
+        expected = defaultTime;
+        result = util.convertTimeStringToInt("202020");
+        Log.d(TAG, "stringToIntTimeConverter: result " + result);
+        assertEquals(expected,result);
+    }
 
 
 }

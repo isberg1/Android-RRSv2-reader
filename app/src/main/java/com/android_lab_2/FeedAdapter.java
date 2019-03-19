@@ -1,26 +1,19 @@
-package com.android_lab_2.Adapter;
+package com.android_lab_2;
 
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android_lab_2.Interface.ItemClickListener;
-import com.android_lab_2.R;
-import com.android_lab_2.model.TrimmedRSSObject;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -102,35 +95,27 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
        // for debugging
         //feedViewHolder.link.setText(trimmedRSSObject.get(i).getLink());
 
-        String uri = "https://gfx.nrk.no/MNSXJtYbTWLX9jZFjJZGOwwgfUF5qvgO5-H9OuyNhzuw";
         imageLoader.displayImage(trimmedRSSObject.get(i).getImageUrl(),feedViewHolder.image);
 
+        feedViewHolder.setItemClickListener((view, position, isClick) -> {
+            if (isClick) {
 
-        feedViewHolder.setItemClickListener(new ItemClickListener() {
-
-            @Override
-            public void onClick(View view, int position, boolean isClick) {
-                if (isClick) {
-
-                    Uri parse;
-                    try {
-                        parse =  Uri.parse(trimmedRSSObject.get(position).getLink());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                    if (parse.toString() == "" || parse.toString() == "") {
-                        return;
-                    }
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW, parse);
-                    context.startActivity(intent);
+                Uri parse;
+                try {
+                    parse =  Uri.parse(trimmedRSSObject.get(position).getLink());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
                 }
+                if (parse.toString() == "" || parse.toString() == "") {
+                    return;
+                }
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, parse);
+                context.startActivity(intent);
             }
         });
     }
-
-
 
 
     @Override
@@ -138,4 +123,27 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
        return trimmedRSSObject.size();
         //return RSSObject.items.size();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

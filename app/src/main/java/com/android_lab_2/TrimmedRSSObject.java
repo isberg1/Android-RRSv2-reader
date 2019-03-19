@@ -1,4 +1,4 @@
-package com.android_lab_2.model;
+package com.android_lab_2;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

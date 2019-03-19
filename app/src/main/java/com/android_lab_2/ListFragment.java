@@ -1,11 +1,9 @@
 package com.android_lab_2;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -22,13 +20,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android_lab_2.Adapter.FeedAdapter;
-import com.android_lab_2.DataBase.DBHelper;
-import com.android_lab_2.model.TrimmedRSSObject;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class ListFragment extends Fragment {
     private static final String TAG = "ListFragment";
@@ -40,6 +33,7 @@ public class ListFragment extends Fragment {
     private FeedAdapter adapter;
     public static final String DATABASE_NAME = "RSS_DB";
     public static DBHelper db;
+
 
 
 
@@ -149,7 +143,7 @@ public class ListFragment extends Fragment {
         Thread getContent = new Thread(() -> {
 
            updateDatastructure();
-            // it there isn't anything to display, do nothing
+            // if there isn't anything to display, do nothing
            if (trimmedRSSObjectList.size() == 0) {
                 return;
            }

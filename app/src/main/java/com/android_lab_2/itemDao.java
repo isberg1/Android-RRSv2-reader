@@ -1,4 +1,4 @@
-package com.android_lab_2.Interface;
+package com.android_lab_2;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -7,7 +7,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.android_lab_2.model.TrimmedRSSObject;
+import com.android_lab_2.TrimmedRSSObject;
 
 import java.util.List;
 

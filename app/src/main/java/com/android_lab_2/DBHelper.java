@@ -1,10 +1,7 @@
-package com.android_lab_2.DataBase;
+package com.android_lab_2;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.android_lab_2.model.TrimmedRSSObject;
 
 import java.util.List;
 

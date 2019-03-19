@@ -1,4 +1,4 @@
-package com.android_lab_2.Interface;
+package com.android_lab_2;
 
 import android.view.View;
 

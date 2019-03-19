@@ -27,14 +27,18 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int  JOB_SERVICE_ID = 111;
 
+    private UtilityClass util;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        util = new UtilityClass(getApplicationContext());
         Log.d(TAG, "onCreate: ");
         // ensure default values for preferences exits
-        ensureValuesExits();
+        util.ensureValuesExits();
+        //ensureValuesExits();
         // used to get and display images in recyclerView, external library: https://github.com/nostra13/Android-Universal-Image-Loader
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
@@ -48,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         // configure jobscheduler service
-        startRSService();
+
+        util.startRSService();
+       // startRSService();
       //  stopRSService();
 
 

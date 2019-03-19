@@ -1,11 +1,8 @@
-package com.android_lab_2.DataBase;
+package com.android_lab_2;
 
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
-
-import com.android_lab_2.Interface.itemDao;
-import com.android_lab_2.model.TrimmedRSSObject;
 
 // the apps database object. uses a ROOM SQLite database
 @Database(entities = {TrimmedRSSObject.class}, version = 1)
