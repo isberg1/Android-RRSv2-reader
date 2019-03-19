@@ -52,106 +52,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         // configure jobscheduler service
-
         util.startRSService();
-       // startRSService();
-      //  stopRSService();
-
-
-    }
-    // ensure default values for preferences exits
-    private void ensureValuesExits() {
-        // try to get values form defaultpreferences
-        String listLength = readPreferences(R.string.rss_list_length_key);
-        String rrsSources = readPreferences(R.string.rss_source_key);
-        String serviceTime = readPreferences(R.string.update_frequency_key);
-        String currentlySelectedURL = readPreferences(R.string.rss_source_currently_selected_url);
-
-        // if value does not exist, wright default values to defaultpreferences
-        if (listLength.equals("") || listLength.equals(" ")) {
-            writePreferences(R.string.rss_list_length_key, getString(R.string.default_value_rss_list_length));
-        }
-        if (rrsSources.equals("") || rrsSources.equals(" ")) {
-            writePreferences(R.string.rss_source_key, getString(R.string.default_value_rss_source));
-        }
-        if (serviceTime.equals("") || serviceTime.equals(" ")) {
-            writePreferences(R.string.update_frequency_key, getString(R.string.default_value_update_frequency));
-        }
-        if (currentlySelectedURL.equals("") || currentlySelectedURL.equals(" ")) {
-            writePreferences(R.string.rss_source_currently_selected_url, getString(R.string.default_value_rss_source));
-        }
-    }
-
-    // starts the rss update service
-    public void startRSService() {
-        // configure jobscheduler service
-        JobInfo info = makeService();
-
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        // start service
-        int result = jobScheduler.schedule(info);
-
-        // check if service is registered
-        if (result == JobScheduler.RESULT_SUCCESS){
-            Log.d("startService", "jobScheduler successes");
-        }
-        else {
-            Log.d("startService",  "jobScheduler failed");
-        }
-    }
-
-    // configure jobscheduler service
-    public JobInfo makeService() {
-        int time = getUpdatefrequency();
-        // set service requirements parameters
-        ComponentName componentName = new ComponentName(this, Scheduler.class);
-        JobInfo info = new JobInfo.Builder(JOB_SERVICE_ID, componentName)
-                .setPersisted(true) // run on reboot
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY) // require network connected
-                .setPeriodic(time * 60 * 1000)
-                .build();  // register service
-
-        return info;
-    }
-
-    // get the frequency at witch the service is to run
-    public  int getUpdatefrequency() {
-        String stringTime = readPreferences(R.string.update_frequency_key);
-        Log.d(TAG, "getUpdatefrequency: stringTime: " + stringTime);
-        int newTime = PreferencesFragment.convertTimeStringToInt(stringTime);
-
-        return newTime;
-    }
-
-    // reads a DefaultSharedPreferences
-    public  String readPreferences(int key) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String str = sharedPref.getString(getString(key),"");
-
-        return str;
-    }
-
-    // wrights a DefaultSharedPreferences
-    public  void writePreferences(int key, String  value) {
-        SharedPreferences sharedPref = null;
-        try {
-            sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(TAG, "writePreferences: unable to getPreferences");
-            return;
-        }
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(key), value);
-        editor.apply();
-    }
-
-    // stops the jobsheduler service from running, used for debugging
-    private void stopRSService() {
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancel(JOB_SERVICE_ID);
-        Log.d(TAG, "stopRSService: ");
-
     }
 
     // initialize the apps fragments
@@ -163,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new PreferencesFragment(), "Preferences");
         viewPager.setAdapter(adapter);
     }
-
 }
 
 /*

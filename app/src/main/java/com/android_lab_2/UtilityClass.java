@@ -13,12 +13,16 @@ import java.util.regex.Pattern;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 import static com.android_lab_2.MainActivity.JOB_SERVICE_ID;
 
-
+/**
+ * helper class
+ * reads and writes to DefaultSharedPreferences
+ * starts and stops service
+ */
 public class UtilityClass {
     private static final String TAG = "UtilityClass";
     private Context context;
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
 
     public UtilityClass(Context context) {
         this.context = context;
@@ -28,7 +32,6 @@ public class UtilityClass {
 
     // tries to match a regex pattern with a searchTerm, and return the boolean of the result
     public static boolean searchMatch(TrimmedRSSObject object, String searchTerm) {
-
 
         Log.d(TAG, "searchMatch: object: " + object.toString() + " searchTerm" + searchTerm);
         Log.d(TAG, "searchMatch: bool: " + Pattern.matches(searchTerm, object.toString()));

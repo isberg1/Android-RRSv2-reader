@@ -11,6 +11,9 @@
     <string name="rss_source_list_separator">","</string>
     <string name="default_value_update_frequency">"15"</string>
     <string name="preferred_date_format">"yyyy-MM-dd HH:mm:ss"</string>
+    <string name="url_param_key">"url_param"</string>
+
+
 
 
     <integer name="job_service_id">111</integer>

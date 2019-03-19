@@ -49,8 +49,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-        itemClickListener.onClick(v, getAdapterPosition(),false);
-
+        itemClickListener.onClick(v, getAdapterPosition(),true);
 
     }
 
@@ -60,7 +59,6 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         return true;
     }
 }
-
 
 
 
@@ -101,6 +99,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             if (isClick) {
 
                 Uri parse;
+                // som validation
                 try {
                     parse =  Uri.parse(trimmedRSSObject.get(position).getLink());
                 } catch (Exception e) {
@@ -111,8 +110,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
                     return;
                 }
 
-                Intent intent = new Intent(Intent.ACTION_VIEW, parse);
+                // old solution opened website in browser
+                /*Intent intent = new Intent(Intent.ACTION_VIEW, parse);
+                context.startActivity(intent);*/
+
+                // new solution open website in new activity
+                Intent intent = new Intent(context, WebActivity.class);
+
+                String key =context.getResources().getString(R.string.url_param_key);
+                String value = trimmedRSSObject.get(position).getLink();
+
+                intent.putExtra(key, value);
                 context.startActivity(intent);
+
             }
         });
     }

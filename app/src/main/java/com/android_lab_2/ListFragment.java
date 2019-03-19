@@ -35,8 +35,6 @@ public class ListFragment extends Fragment {
     public static DBHelper db;
 
 
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
