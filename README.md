@@ -1,5 +1,7 @@
 # IMT3673 2019 lab 2 Simple NEWS reader
 
+this app was made using a Samsung galaxy S5 with android 6.0.1
+
 ## About
 
 This is a simple RSS news reader using rss2.0.
