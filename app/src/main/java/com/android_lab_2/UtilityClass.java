@@ -34,9 +34,15 @@ public class UtilityClass {
     public static boolean searchMatch(TrimmedRSSObject object, String searchTerm) {
 
         Log.d(TAG, "searchMatch: object: " + object.toString() + " searchTerm" + searchTerm);
-        Log.d(TAG, "searchMatch: bool: " + Pattern.matches(searchTerm, object.toString()));
+      //  Log.d(TAG, "searchMatch: bool: " + Pattern.matches(searchTerm, object.toString()));
 
-        Pattern p = Pattern.compile(searchTerm);
+        Pattern p = null;
+        try {
+            p = Pattern.compile(searchTerm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         // if title matches
         if (p.matcher(object.getTitle()).matches()){
             return true;

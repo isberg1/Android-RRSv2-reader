@@ -37,7 +37,7 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        assertEquals("com.android_lab_2", appContext.getPackageName());
+        assertEquals("com.android_lab_2.test", appContext.getPackageName());
     }
 
 
@@ -159,6 +159,10 @@ public class ExampleInstrumentedTest {
 
         result = UtilityClass.searchMatch(trimmedRSSObject, ".*2019.*");
         assertTrue(result);
+
+        result = UtilityClass.searchMatch(trimmedRSSObject, "*");
+        assertFalse(result);
+
     }
 
     @Test

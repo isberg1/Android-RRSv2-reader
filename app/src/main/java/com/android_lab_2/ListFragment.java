@@ -106,7 +106,7 @@ public class ListFragment extends Fragment {
                  }
              }
 
-             // if no entries matches the searchTerm, respond with snackbar message.
+             // if no entries matches the searchTerm, respond with snackBar message.
              if (temp.size() == 0 ) {
                  Log.d(TAG, "filter: run: temp list size:" + temp.size());
                  temp.clear();

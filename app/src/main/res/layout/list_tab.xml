@@ -18,9 +18,9 @@
             android:hint=" Enter Regex Pattern"
             android:layout_gravity="start"
             android:layout_weight="1"
-            android:inputType="textPersonName"
             android:maxLines="1"
             android:background="@color/colorWhite"
+            android:inputType="text"
             />
 
         <Button

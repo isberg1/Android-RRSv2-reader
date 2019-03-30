@@ -1,6 +1,11 @@
-# IMT3673 2019 lab 2 Simple NEWS reader
+# Simple RSS NEWS reader
+originally an assignment in the NTNU course IMT3673 2019 
 
-this app was made using a Samsung galaxy S5 with android 6.0.1
+
+This app was made using 
+* Samsung galaxy S5 with android 6.0.1 (Real phone)
+* NEXUS 5X API 28 (Emulator)
+
 
 ## About
 
@@ -79,6 +84,9 @@ network is available. the drawback of using this method is that android may not 
 service exactly when it is suppose to. for example you may specify the app to run every 30 minutes.
 but android may run it every 29, 31, 33 minutes or their about in stead. also the minimum time
 between runs are 15 minutes.
+
+#### test
+all tests are located in Android-RSSv2-reader/app/src/androidTest/java/com/android_lab_2/ExampleInstrumentedTest.java
 
 
 #### about other things
