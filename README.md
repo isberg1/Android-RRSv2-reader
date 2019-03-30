@@ -7,11 +7,11 @@ this app was made using a Samsung galaxy S5 with android 6.0.1
 This is a simple RSS news reader using rss2.0.
 It has been tested on the rss feeds form:
 
-https://www.nrk.no/nyheter/siste.rss
-https://www.nrk.no/toppsaker.rss                    # has images
-https://www.vg.no/rss/feed/forsiden/                # has images
-https://www.cisco.com/c/dam/global/no_no/about/rss.xml
-http://teknobygg.no/rss/articles/3108
+* https://www.nrk.no/nyheter/siste.rss
+* https://www.nrk.no/toppsaker.rss                     
+* https://www.vg.no/rss/feed/forsiden/                 
+* https://www.cisco.com/c/dam/global/no_no/about/rss.xml
+* http://teknobygg.no/rss/articles/3108
 
 the app consists of 2 Activities. MainActivity that uses 2 fragments, List and preferences.
 and a WebActivity for displaying websites. A SQLite database to store rss articles.
